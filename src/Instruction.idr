@@ -11,6 +11,7 @@ data Instruction =
     | PUSH
     | POP
     | ADD
+    | MUL
 
 --The time to execute a NOP instruction.
 --FETCH (1 ins)
@@ -50,3 +51,12 @@ timePOP = 3
 export
 timeADD : Bits64
 timeADD = 4
+
+--The time to execute a MUL instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--MUL (5 ins)
+--FETCH (1 ins)
+export
+timeMUL : Bits64
+timeMUL = 8
