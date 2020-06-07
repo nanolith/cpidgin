@@ -1,4 +1,4 @@
 C Pidgin
 ========
 
-C interpreter and proof system written in Agda.
+C interpreter and proof system written in Idris.
