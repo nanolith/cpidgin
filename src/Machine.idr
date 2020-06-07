@@ -30,6 +30,10 @@ exception : MachineException -> Either MachineException Machine
 exception = Left
 
 export
+machineRegister : Machine -> Bits64
+machineRegister (Mach _ (Reg a) _) = a
+
+export
 eval : Instruction -> Machine -> Either MachineException Machine
 eval NOP (Mach s r (Time t)) =
     comp (Mach s r (Time (t + Instruction.timeNOP)))
