@@ -40,6 +40,13 @@ eval PUSH (Mach (StackFromList ss) (Reg a) (Time t)) =
             (StackFromList (a :: ss))
             (Reg a)
             (Time (t + Instruction.timePUSH)))
+eval POP (Mach (StackFromList (s :: ss)) _ (Time t)) =
+    comp (Mach
+            (StackFromList ss)
+            (Reg s)
+            (Time (t + Instruction.timePOP)))
+eval POP (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
 eval _ _ = exception (NotImplementedException "Unknown instruction.")
 
 --The NOP instruction takes one cycle and does not otherwise change machine
@@ -66,3 +73,19 @@ evalPUSHSpec : {ss : List Bits64} -> {a, t : Bits64}
                                 (Reg a)
                                 (Time (t + Instruction.timePUSH)))
 evalPUSHSpec = Refl
+
+--The PUSH instruction reads the register from the stack.
+private
+evalPOPHappySpec : {ss : List Bits64} -> {s, t : Bits64}
+                    -> eval POP (Mach (StackFromList (s :: ss)) _ (Time t))
+                        = comp (Mach
+                                    (StackFromList ss)
+                                    (Reg s)
+                                    (Time (t + Instruction.timePOP)))
+evalPOPHappySpec = Refl
+
+--The PUSH instruction underflows the stack if the stack is empty.
+private
+evalPOPUnderflowSpec : eval POP (Mach (StackFromList []) _ _)
+                        = exception StackUnderflowException
+evalPOPUnderflowSpec = Refl
