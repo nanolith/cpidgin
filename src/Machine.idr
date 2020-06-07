@@ -33,6 +33,8 @@ export
 eval : Instruction -> Machine -> Either MachineException Machine
 eval NOP (Mach s r (Time t)) =
     comp (Mach s r (Time (t + Instruction.timeNOP)))
+eval (IMM i) (Mach s _ (Time t)) =
+    comp (Mach s (Reg i) (Time (t + Instruction.timeIMM)))
 eval _ _ = exception (NotImplementedException "Unknown instruction.")
 
 --The NOP instruction takes one cycle and does not otherwise change machine
@@ -42,3 +44,10 @@ evalNOPSpec : {s : Stack} -> {r : Register} -> {t : Bits64}
                 -> eval NOP (Mach s r (Time t))
                     = comp (Mach s r (Time (t + Instruction.timeNOP)))
 evalNOPSpec = Refl
+
+--The IMM instruction loads the given immediate value into the register.
+private
+evalIMMSpec : {s : Stack} -> {i, t : Bits64}
+                -> eval (IMM i) (Mach s _ (Time t))
+                    = comp (Mach s (Reg i) (Time (t + Instruction.timeIMM)))
+evalIMMSpec = Refl
