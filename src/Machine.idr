@@ -47,6 +47,13 @@ eval POP (Mach (StackFromList (s :: ss)) _ (Time t)) =
             (Time (t + Instruction.timePOP)))
 eval POP (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+eval ADD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
+    comp (Mach
+            (StackFromList ss)
+            (Reg (a + s))
+            (Time (t + Instruction.timeADD)))
+eval ADD (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
 eval _ _ = exception (NotImplementedException "Unknown instruction.")
 
 --The NOP instruction takes one cycle and does not otherwise change machine
@@ -89,3 +96,20 @@ private
 evalPOPUnderflowSpec : eval POP (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalPOPUnderflowSpec = Refl
+
+--The ADD instruction adds the top of stack to the register.
+private
+evalADDHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
+                    -> eval ADD
+                           (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
+                        = comp (Mach
+                                    (StackFromList ss)
+                                    (Reg (a + s))
+                                    (Time (t + Instruction.timeADD)))
+evalADDHappySpec = Refl
+
+--The ADD instruction underflows the stack if the stack is empty.
+private
+evalADDUnderflowSpec : eval ADD (Mach (StackFromList []) _ _)
+                        = exception StackUnderflowException
+evalADDUnderflowSpec = Refl

@@ -10,6 +10,7 @@ data Instruction =
     | IMM Bits64
     | PUSH
     | POP
+    | ADD
 
 --The time to execute a NOP instruction.
 --FETCH (1 ins)
@@ -40,3 +41,12 @@ timePUSH = 3
 export
 timePOP : Bits64
 timePOP = 3
+
+--The time to execute an ADD instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--ADD (1 ins)
+--FETCH (1 ins)
+export
+timeADD : Bits64
+timeADD = 4
