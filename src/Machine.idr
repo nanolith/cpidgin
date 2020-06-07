@@ -35,6 +35,11 @@ eval NOP (Mach s r (Time t)) =
     comp (Mach s r (Time (t + Instruction.timeNOP)))
 eval (IMM i) (Mach s _ (Time t)) =
     comp (Mach s (Reg i) (Time (t + Instruction.timeIMM)))
+eval PUSH (Mach (StackFromList ss) (Reg a) (Time t)) =
+    comp (Mach
+            (StackFromList (a :: ss))
+            (Reg a)
+            (Time (t + Instruction.timePUSH)))
 eval _ _ = exception (NotImplementedException "Unknown instruction.")
 
 --The NOP instruction takes one cycle and does not otherwise change machine
@@ -51,3 +56,13 @@ evalIMMSpec : {s : Stack} -> {i, t : Bits64}
                 -> eval (IMM i) (Mach s _ (Time t))
                     = comp (Mach s (Reg i) (Time (t + Instruction.timeIMM)))
 evalIMMSpec = Refl
+
+--The PUSH instruction writes the register to the stack.
+private
+evalPUSHSpec : {ss : List Bits64} -> {a, t : Bits64}
+                -> eval PUSH (Mach (StackFromList ss) (Reg a) (Time t))
+                    = comp (Mach
+                                (StackFromList (a :: ss))
+                                (Reg a)
+                                (Time (t + Instruction.timePUSH)))
+evalPUSHSpec = Refl
