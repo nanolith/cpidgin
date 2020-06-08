@@ -21,24 +21,24 @@ data MachineException =
       NotImplementedException String
     | StackUnderflowException
 
-export
+public export
 comp : Machine -> Either MachineException Machine
 comp = Right
 
-export
+public export
 exception : MachineException -> Either MachineException Machine
 exception = Left
 
-export
+public export
 machineRegister : Machine -> Bits64
 machineRegister (Mach _ (Reg a) _) = a
 
-export
+public export
 emptyMachine : Machine
 emptyMachine =
     (Mach (StackFromList []) (Reg 0) (Time 0))
 
-export
+public export
 eval : Instruction -> Machine -> Either MachineException Machine
 eval NOP (Mach s r (Time t)) =
     comp (Mach s r (Time (t + Instruction.timeNOP)))
@@ -74,21 +74,21 @@ eval _ _ = exception (NotImplementedException "Unknown instruction.")
 
 --The NOP instruction takes one cycle and does not otherwise change machine
 --state.
-private
+export
 evalNOPSpec : {s : Stack} -> {r : Register} -> {t : Bits64}
                 -> eval NOP (Mach s r (Time t))
                     = comp (Mach s r (Time (t + Instruction.timeNOP)))
 evalNOPSpec = Refl
 
 --The IMM instruction loads the given immediate value into the register.
-private
+export
 evalIMMSpec : {s : Stack} -> {i, t : Bits64}
                 -> eval (IMM i) (Mach s _ (Time t))
                     = comp (Mach s (Reg i) (Time (t + Instruction.timeIMM)))
 evalIMMSpec = Refl
 
 --The PUSH instruction writes the register to the stack.
-private
+export
 evalPUSHSpec : {ss : List Bits64} -> {a, t : Bits64}
                 -> eval PUSH (Mach (StackFromList ss) (Reg a) (Time t))
                     = comp (Mach
@@ -98,7 +98,7 @@ evalPUSHSpec : {ss : List Bits64} -> {a, t : Bits64}
 evalPUSHSpec = Refl
 
 --The PUSH instruction reads the register from the stack.
-private
+export
 evalPOPHappySpec : {ss : List Bits64} -> {s, t : Bits64}
                     -> eval POP (Mach (StackFromList (s :: ss)) _ (Time t))
                         = comp (Mach
@@ -108,13 +108,13 @@ evalPOPHappySpec : {ss : List Bits64} -> {s, t : Bits64}
 evalPOPHappySpec = Refl
 
 --The PUSH instruction underflows the stack if the stack is empty.
-private
+export
 evalPOPUnderflowSpec : eval POP (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalPOPUnderflowSpec = Refl
 
 --The ADD instruction adds the top of stack to the register.
-private
+export
 evalADDHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval ADD
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -125,13 +125,13 @@ evalADDHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalADDHappySpec = Refl
 
 --The ADD instruction underflows the stack if the stack is empty.
-private
+export
 evalADDUnderflowSpec : eval ADD (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalADDUnderflowSpec = Refl
 
 --The MUL instruction multiplies the top of stack with the register.
-private
+export
 evalMULHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval MUL
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -142,7 +142,7 @@ evalMULHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalMULHappySpec = Refl
 
 --The MUL instruction underflows the stack if the stack is empty.
-private
+export
 evalMULUnderflowSpec : eval MUL (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalMULUnderflowSpec = Refl
