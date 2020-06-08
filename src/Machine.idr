@@ -56,6 +56,13 @@ eval POP (Mach (StackFromList (s :: ss)) _ (Time t)) =
             (Time (t + Instruction.timePOP)))
 eval POP (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+eval DUP (Mach (StackFromList (s :: ss)) r (Time t)) =
+    comp (Mach
+            (StackFromList (s :: s :: ss))
+            r
+            (Time (t + Instruction.timeDUP)))
+eval DUP (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
 eval ADD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
@@ -97,7 +104,7 @@ evalPUSHSpec : {ss : List Bits64} -> {a, t : Bits64}
                                 (Time (t + Instruction.timePUSH)))
 evalPUSHSpec = Refl
 
---The PUSH instruction reads the register from the stack.
+--The POP instruction reads the register from the stack.
 export
 evalPOPHappySpec : {ss : List Bits64} -> {s, t : Bits64}
                     -> eval POP (Mach (StackFromList (s :: ss)) _ (Time t))
@@ -107,11 +114,27 @@ evalPOPHappySpec : {ss : List Bits64} -> {s, t : Bits64}
                                     (Time (t + Instruction.timePOP)))
 evalPOPHappySpec = Refl
 
---The PUSH instruction underflows the stack if the stack is empty.
+--The POP instruction underflows the stack if the stack is empty.
 export
 evalPOPUnderflowSpec : eval POP (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalPOPUnderflowSpec = Refl
+
+--The DUP instruction duplicates the top of the stack.
+export
+evalDUPHappySpec : {ss : List Bits64} -> {r : Register} -> {s, t : Bits64}
+                    -> eval DUP (Mach (StackFromList (s :: ss)) r (Time t))
+                        = comp (Mach
+                                    (StackFromList (s :: s :: ss))
+                                    r
+                                    (Time (t + Instruction.timeDUP)))
+evalDUPHappySpec = Refl
+
+--The DUP instruction underflows the stack if the stack is empty.
+export
+evalDUPUnderflowSpec : eval DUP (Mach (StackFromList []) _ _)
+                        = exception StackUnderflowException
+evalDUPUnderflowSpec = Refl
 
 --The ADD instruction adds the top of stack to the register.
 export
