@@ -12,6 +12,7 @@ data Instruction =
     | POP
     | DUP
     | SHL Nat
+    | AND
     | ADD
     | MUL
 
@@ -60,6 +61,15 @@ timeDUP = 3
 export
 timeSHL : Bits64
 timeSHL = 2
+
+--The time to execute an AND instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--ADD (1 ins)
+--FETCH (1 ins)
+export
+timeAND : Bits64
+timeAND = 4
 
 --The time to execute an ADD instruction
 --READ STACK (1 ins)

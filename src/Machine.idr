@@ -73,6 +73,13 @@ eval (SHL n) (Mach s (Reg a) (Time t)) =
             s
             (Reg (shl a n))
             (Time (t + Instruction.timeSHL)))
+eval AND (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
+    comp (Mach
+            (StackFromList ss)
+            (Reg (a `prim__andB64` s))
+            (Time (t + Instruction.timeAND)))
+eval AND (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
 eval ADD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
@@ -156,6 +163,24 @@ evalSHLHappySpec : {n : Nat} -> {s : Stack} -> {a, t : Bits64}
                                     (Reg (shl a n))
                                     (Time (t + Instruction.timeSHL)))
 evalSHLHappySpec = Refl
+
+--The AND instruction performs a bitwise and between the top of stack and the
+--register.
+export
+evalANDHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
+                    -> eval AND
+                           (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
+                        = comp (Mach
+                                    (StackFromList ss)
+                                    (Reg (a `prim__andB64` s))
+                                    (Time (t + Instruction.timeAND)))
+evalANDHappySpec = Refl
+
+--The AND instruction underflows the stack if the stack is empty.
+export
+evalANDUnderflowSpec : eval AND (Mach (StackFromList []) _ _)
+                        = exception StackUnderflowException
+evalANDUnderflowSpec = Refl
 
 --The ADD instruction adds the top of stack to the register.
 export
