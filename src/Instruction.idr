@@ -11,6 +11,7 @@ data Instruction =
     | PUSH
     | POP
     | DUP
+    | SHL Nat
     | ADD
     | MUL
 
@@ -52,6 +53,13 @@ timePOP = 3
 export
 timeDUP : Bits64
 timeDUP = 3
+
+--The time to execute a SHL instruction
+--READ IMM (1 ins)
+--SHIFT (1 ins)
+export
+timeSHL : Bits64
+timeSHL = 2
 
 --The time to execute an ADD instruction
 --READ STACK (1 ins)

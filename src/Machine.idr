@@ -39,6 +39,11 @@ emptyMachine =
     (Mach (StackFromList []) (Reg 0) (Time 0))
 
 public export
+shl : Bits64 -> Nat -> Bits64
+shl x Z = x
+shl x (S n) = shl (x * 2) n
+
+public export
 eval : Instruction -> Machine -> Either MachineException Machine
 eval NOP (Mach s r (Time t)) =
     comp (Mach s r (Time (t + Instruction.timeNOP)))
@@ -63,6 +68,11 @@ eval DUP (Mach (StackFromList (s :: ss)) r (Time t)) =
             (Time (t + Instruction.timeDUP)))
 eval DUP (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+eval (SHL n) (Mach s (Reg a) (Time t)) =
+    comp (Mach
+            s
+            (Reg (shl a n))
+            (Time (t + Instruction.timeSHL)))
 eval ADD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
@@ -135,6 +145,17 @@ export
 evalDUPUnderflowSpec : eval DUP (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalDUPUnderflowSpec = Refl
+
+--The SHL instruction shifts the register to the left by the IMM number of bits.
+export
+evalSHLHappySpec : {n : Nat} -> {s : Stack} -> {a, t : Bits64}
+                    -> eval (SHL n)
+                            (Mach s (Reg a) (Time t))
+                        = comp (Mach
+                                    s
+                                    (Reg (shl a n))
+                                    (Time (t + Instruction.timeSHL)))
+evalSHLHappySpec = Refl
 
 --The ADD instruction adds the top of stack to the register.
 export
