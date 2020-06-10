@@ -14,6 +14,7 @@ data Instruction =
     | SHL Nat
     | AND
     | OR
+    | XOR
     | ADD
     | MUL
 
@@ -80,6 +81,15 @@ timeAND = 4
 export
 timeOR : Bits64
 timeOR = 4
+
+--The time to execute an XOR instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--XOR (1 ins)
+--FETCH (1 ins)
+export
+timeXOR : Bits64
+timeXOR = 4
 
 --The time to execute an ADD instruction
 --READ STACK (1 ins)
