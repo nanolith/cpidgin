@@ -101,6 +101,13 @@ eval ADD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
             (Time (t + Instruction.timeADD)))
 eval ADD (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+eval SUB (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
+    comp (Mach
+            (StackFromList ss)
+            (Reg (a `prim__subB64` s))
+            (Time (t + Instruction.timeSUB)))
+eval SUB (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
 eval MUL (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
@@ -248,6 +255,23 @@ export
 evalADDUnderflowSpec : eval ADD (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalADDUnderflowSpec = Refl
+
+--The SUB instruction subtracts the top of stack from the register.
+export
+evalSUBHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
+                    -> eval SUB
+                           (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
+                        = comp (Mach
+                                    (StackFromList ss)
+                                    (Reg (a `prim__subB64` s))
+                                    (Time (t + Instruction.timeSUB)))
+evalSUBHappySpec = Refl
+
+--The SUB instruction underflows the stack if the stack is empty.
+export
+evalSUBUnderflowSpec : eval SUB (Mach (StackFromList []) _ _)
+                        = exception StackUnderflowException
+evalSUBUnderflowSpec = Refl
 
 --The MUL instruction multiplies the top of stack with the register.
 export

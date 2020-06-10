@@ -16,6 +16,7 @@ data Instruction =
     | OR
     | XOR
     | ADD
+    | SUB
     | MUL
 
 --The time to execute a NOP instruction.
@@ -99,6 +100,15 @@ timeXOR = 4
 export
 timeADD : Bits64
 timeADD = 4
+
+--The time to execute a SUB instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--SUB (1 ins)
+--FETCH (1 ins)
+export
+timeSUB : Bits64
+timeSUB = 4
 
 --The time to execute a MUL instruction
 --READ STACK (1 ins)
