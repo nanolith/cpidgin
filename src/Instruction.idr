@@ -18,6 +18,7 @@ data Instruction =
     | EQ
     | LT
     | GT
+    | LE
     | ADD
     | SUB
     | MUL
@@ -112,6 +113,15 @@ timeEQ = 4
 export
 timeLT : Bits64
 timeLT = 4
+
+--The time to execute an LE instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--LE (1 ins)
+--FETCH (1 ins)
+export
+timeLE : Bits64
+timeLE = 4
 
 --The time to execute a GT instruction
 --READ STACK (1 ins)
