@@ -51,6 +51,13 @@ evalMod x 0 = Left DivideByZeroException
 --since y is non-zero, there is no longer a hole. Force totality.
 evalMod x y = assert_total $ Right $ x `prim__uremB64` y
 
+public export total
+evalDiv : Bits64 -> Bits64 -> Either MachineException Bits64
+--the zero case has a hole in udiv, so we throw an exception
+evalDiv x 0 = Left DivideByZeroException
+--since y is non-zero, there is no longer a hole. Force totality.
+evalDiv x y = assert_total $ Right $ x `prim__udivB64` y
+
 public export
 eval : Instruction -> Machine -> Either MachineException Machine
 eval NOP (Mach s r (Time t)) =
@@ -165,6 +172,14 @@ eval MOD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) = do
             (Reg res)
             (Time (t + Instruction.timeMOD)))
 eval MOD (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
+eval DIV (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) = do
+    res <- evalDiv a s
+    comp (Mach
+            (StackFromList ss)
+            (Reg res)
+            (Time (t + Instruction.timeDIV)))
+eval DIV (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
 eval _ _ = exception (NotImplementedException "Unknown instruction.")
 
@@ -458,3 +473,30 @@ evalMODDivideByZeroSpec : {ss : List Bits64} -> {s, a, t : Bits64}
                            (Mach (StackFromList (0 :: ss)) (Reg a) (Time t))
                             = exception DivideByZeroException
 evalMODDivideByZeroSpec = Refl
+
+--The DIV instruction divides the register by the top of stack.
+export
+evalDIVHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
+                    -> eval DIV
+                           (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
+                        = do
+                            res <- evalDiv a s
+                            comp (Mach
+                                    (StackFromList ss)
+                                    (Reg res)
+                                    (Time (t + Instruction.timeDIV)))
+evalDIVHappySpec = Refl
+
+--The DIV instruction underflows the stack if the stack is empty.
+export
+evalDIVUnderflowSpec : eval DIV (Mach (StackFromList []) _ _)
+                        = exception StackUnderflowException
+evalDIVUnderflowSpec = Refl
+
+--The DIV instruction causes a DivideByZeroException the top of stack is zero.
+export
+evalDIVDivideByZeroSpec : {ss : List Bits64} -> {s, a, t : Bits64}
+                        -> eval DIV
+                           (Mach (StackFromList (0 :: ss)) (Reg a) (Time t))
+                            = exception DivideByZeroException
+evalDIVDivideByZeroSpec = Refl
