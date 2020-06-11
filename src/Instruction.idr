@@ -19,6 +19,7 @@ data Instruction =
     | LT
     | GT
     | LE
+    | GE
     | ADD
     | SUB
     | MUL
@@ -122,6 +123,15 @@ timeLT = 4
 export
 timeLE : Bits64
 timeLE = 4
+
+--The time to execute a GE instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--GE (1 ins)
+--FETCH (1 ins)
+export
+timeGE : Bits64
+timeGE = 4
 
 --The time to execute a GT instruction
 --READ STACK (1 ins)
