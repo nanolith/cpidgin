@@ -23,6 +23,7 @@ data Instruction =
     | ADD
     | SUB
     | MUL
+    | MOD
 
 --The time to execute a NOP instruction.
 --FETCH (1 ins)
@@ -168,3 +169,12 @@ timeSUB = 4
 export
 timeMUL : Bits64
 timeMUL = 8
+
+--The time to execute a MOD instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--MOD (5 ins)
+--FETCH (1 ins)
+export
+timeMOD : Bits64
+timeMOD = 8

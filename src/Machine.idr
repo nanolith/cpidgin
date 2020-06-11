@@ -20,6 +20,7 @@ public export
 data MachineException =
       NotImplementedException String
     | StackUnderflowException
+    | DivideByZeroException
 
 public export
 comp : Machine -> Either MachineException Machine
@@ -42,6 +43,13 @@ public export
 shl : Bits64 -> Nat -> Bits64
 shl x Z = x
 shl x (S n) = shl (x * 2) n
+
+public export total
+evalMod : Bits64 -> Bits64 -> Either MachineException Bits64
+--the zero case has a hole in urem, so we throw an exception
+evalMod x 0 = Left DivideByZeroException
+--since y is non-zero, there is no longer a hole. Force totality.
+evalMod x y = assert_total $ Right $ x `prim__uremB64` y
 
 public export
 eval : Instruction -> Machine -> Either MachineException Machine
@@ -149,6 +157,14 @@ eval MUL (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
             (Reg (a * s))
             (Time (t + Instruction.timeMUL)))
 eval MUL (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
+eval MOD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) = do
+    res <- evalMod a s
+    comp (Mach
+            (StackFromList ss)
+            (Reg res)
+            (Time (t + Instruction.timeMOD)))
+eval MOD (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
 eval _ _ = exception (NotImplementedException "Unknown instruction.")
 
@@ -414,3 +430,31 @@ export
 evalMULUnderflowSpec : eval MUL (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalMULUnderflowSpec = Refl
+
+--The MOD instruction finds the modulus of the register with respect to the top
+--of stack.
+export
+evalMODHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
+                    -> eval MOD
+                           (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
+                        = do
+                            res <- evalMod a s
+                            comp (Mach
+                                    (StackFromList ss)
+                                    (Reg res)
+                                    (Time (t + Instruction.timeMOD)))
+evalMODHappySpec = Refl
+
+--The MOD instruction underflows the stack if the stack is empty.
+export
+evalMODUnderflowSpec : eval MOD (Mach (StackFromList []) _ _)
+                        = exception StackUnderflowException
+evalMODUnderflowSpec = Refl
+
+--The MOD instruction causes a DivideByZeroException the top of stack is zero.
+export
+evalMODDivideByZeroSpec : {ss : List Bits64} -> {s, a, t : Bits64}
+                        -> eval MOD
+                           (Mach (StackFromList (0 :: ss)) (Reg a) (Time t))
+                            = exception DivideByZeroException
+evalMODDivideByZeroSpec = Refl
