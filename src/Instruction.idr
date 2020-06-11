@@ -17,6 +17,7 @@ data Instruction =
     | XOR
     | EQ
     | LT
+    | GT
     | ADD
     | SUB
     | MUL
@@ -111,6 +112,15 @@ timeEQ = 4
 export
 timeLT : Bits64
 timeLT = 4
+
+--The time to execute a GT instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--GT (1 ins)
+--FETCH (1 ins)
+export
+timeGT : Bits64
+timeGT = 4
 
 --The time to execute an ADD instruction
 --READ STACK (1 ins)
