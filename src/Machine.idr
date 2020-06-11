@@ -94,6 +94,13 @@ eval XOR (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
             (Time (t + Instruction.timeXOR)))
 eval XOR (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+eval EQ (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
+    comp (Mach
+            (StackFromList ss)
+            (Reg (if a == s then 1 else 0))
+            (Time (t + Instruction.timeEQ)))
+eval EQ (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
 eval ADD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
@@ -238,6 +245,24 @@ export
 evalXORUnderflowSpec : eval XOR (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalXORUnderflowSpec = Refl
+
+--The EQ instruction compares the register with top of stack, setting the
+--register to 1 if equal, and 0 otherwise.
+export
+evalEQHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
+                    -> eval EQ
+                           (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
+                        = comp (Mach
+                                    (StackFromList ss)
+                                    (Reg (if a == s then 1 else 0))
+                                    (Time (t + Instruction.timeADD)))
+evalEQHappySpec = Refl
+
+--The EQ instruction underflows the stack if the stack is empty.
+export
+evalEQUnderflowSpec : eval EQ (Mach (StackFromList []) _ _)
+                        = exception StackUnderflowException
+evalEQUnderflowSpec = Refl
 
 --The ADD instruction adds the top of stack to the register.
 export

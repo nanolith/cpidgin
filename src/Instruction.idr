@@ -15,6 +15,7 @@ data Instruction =
     | AND
     | OR
     | XOR
+    | EQ
     | ADD
     | SUB
     | MUL
@@ -91,6 +92,15 @@ timeOR = 4
 export
 timeXOR : Bits64
 timeXOR = 4
+
+--The time to execute an EQ instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--EQ (1 ins)
+--FETCH (1 ins)
+export
+timeEQ : Bits64
+timeEQ = 4
 
 --The time to execute an ADD instruction
 --READ STACK (1 ins)
