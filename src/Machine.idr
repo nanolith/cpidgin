@@ -101,6 +101,13 @@ eval EQ (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
             (Time (t + Instruction.timeEQ)))
 eval EQ (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+eval LT (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
+    comp (Mach
+            (StackFromList ss)
+            (Reg (if a < s then 1 else 0))
+            (Time (t + Instruction.timeEQ)))
+eval LT (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
 eval ADD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
@@ -263,6 +270,24 @@ export
 evalEQUnderflowSpec : eval EQ (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalEQUnderflowSpec = Refl
+
+--The LT instruction compares the register with top of stack, setting the
+--register to 1 if the register is less than tos, and 0 otherwise.
+export
+evalLTHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
+                    -> eval LT
+                           (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
+                        = comp (Mach
+                                    (StackFromList ss)
+                                    (Reg (if a < s then 1 else 0))
+                                    (Time (t + Instruction.timeADD)))
+evalLTHappySpec = Refl
+
+--The LT instruction underflows the stack if the stack is empty.
+export
+evalLTUnderflowSpec : eval LT (Mach (StackFromList []) _ _)
+                        = exception StackUnderflowException
+evalLTUnderflowSpec = Refl
 
 --The ADD instruction adds the top of stack to the register.
 export
