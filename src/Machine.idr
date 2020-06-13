@@ -610,16 +610,17 @@ evalMODDivideByZeroSpec = Refl
 
 --The DIV instruction divides the register by the top of stack.
 export
-evalDIVHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
+evalDIVHappySpec : {ss : List Bits64} -> {a, t : Bits64} -> (s : Bits64)
+                    -> So (s /= 0)
                     -> eval DIV
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
-                        = do
-                            res <- evalDiv a s
-                            comp (Mach
+                        = comp (Mach
                                     (StackFromList ss)
-                                    (Reg res)
+                                    (Reg (prim__sdivB64 a s))
                                     (Time (t + Instruction.timeDIV)))
-evalDIVHappySpec = Refl
+evalDIVHappySpec s l with (s == 0)
+    | True  = absurd l
+    | False = Refl
 
 --The DIV instruction underflows the stack if the stack is empty.
 export
