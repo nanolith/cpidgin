@@ -57,10 +57,11 @@ ushr x (S n) = ushr (assert_total $ prim__udivB64 x 2) n
 
 public export total
 evalMod : Bits64 -> Bits64 -> Either MachineException Bits64
+evalMod x y with (y == 0)
 --the zero case has a hole in urem, so we throw an exception
-evalMod x 0 = Left DivideByZeroException
+    | True  = Left DivideByZeroException
 --since y is non-zero, there is no longer a hole. Force totality.
-evalMod x y = assert_total $ Right $ x `prim__uremB64` y
+    | False = assert_total $ Right $ x `prim__uremB64` y
 
 public export total
 evalDiv : Bits64 -> Bits64 -> Either MachineException Bits64
@@ -583,16 +584,17 @@ evalMULUnderflowSpec = Refl
 --The MOD instruction finds the modulus of the register with respect to the top
 --of stack.
 export
-evalMODHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
+evalMODHappySpec : {ss : List Bits64} -> {a, t : Bits64} -> (s : Bits64)
+                    -> So (s /= 0)
                     -> eval MOD
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
-                        = do
-                            res <- evalMod a s
-                            comp (Mach
+                        = comp (Mach
                                     (StackFromList ss)
-                                    (Reg res)
+                                    (Reg (prim__uremB64 a s))
                                     (Time (t + Instruction.timeMOD)))
-evalMODHappySpec = Refl
+evalMODHappySpec s l with (s == 0)
+    | True  = absurd l
+    | False = Refl
 
 --The MOD instruction underflows the stack if the stack is empty.
 export
