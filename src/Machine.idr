@@ -45,6 +45,11 @@ shl x Z = x
 shl x (S n) = shl (x * 2) n
 
 public export total
+shr : Bits64 -> Nat -> Bits64
+shr x Z = x
+shr x (S n) = shr (assert_total $ prim__sdivB64 x 2) n
+
+public export total
 evalMod : Bits64 -> Bits64 -> Either MachineException Bits64
 --the zero case has a hole in urem, so we throw an exception
 evalMod x 0 = Left DivideByZeroException
@@ -88,6 +93,11 @@ eval (SHL n) (Mach s (Reg a) (Time t)) =
             s
             (Reg (shl a n))
             (Time (t + Instruction.timeSHL)))
+eval (SHR n) (Mach s (Reg a) (Time t)) =
+    comp (Mach
+            s
+            (Reg (shr a n))
+            (Time (t + Instruction.timeSHR)))
 eval AND (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
@@ -250,6 +260,17 @@ evalSHLHappySpec : {n : Nat} -> {s : Stack} -> {a, t : Bits64}
                                     (Reg (shl a n))
                                     (Time (t + Instruction.timeSHL)))
 evalSHLHappySpec = Refl
+
+--The SHR instruction shifts the reg to the right by the IMM number of bits.
+export
+evalSHRHappySpec : {n : Nat} -> {s : Stack} -> {a, t : Bits64}
+                    -> eval (SHR n)
+                            (Mach s (Reg a) (Time t))
+                        = comp (Mach
+                                    s
+                                    (Reg (shr a n))
+                                    (Time (t + Instruction.timeSHR)))
+evalSHRHappySpec = Refl
 
 --The AND instruction performs a bitwise and between the top of stack and the
 --register.
