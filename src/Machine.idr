@@ -70,135 +70,171 @@ evalDiv x y = assert_total $ Right $ x `prim__udivB64` y
 
 public export
 eval : Instruction -> Machine -> Either MachineException Machine
+--execute the NOP instruction.
 eval NOP (Mach s r (Time t)) =
     comp (Mach s r (Time (t + Instruction.timeNOP)))
+--execute the IMM instruction.
 eval (IMM i) (Mach s _ (Time t)) =
     comp (Mach s (Reg i) (Time (t + Instruction.timeIMM)))
+--execute the PUSH instruction.
 eval PUSH (Mach (StackFromList ss) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList (a :: ss))
             (Reg a)
             (Time (t + Instruction.timePUSH)))
+--execute the POP instruction.
 eval POP (Mach (StackFromList (s :: ss)) _ (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg s)
             (Time (t + Instruction.timePOP)))
+--handle POP instruction stack underflow exception.
 eval POP (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the DUP instruction.
 eval DUP (Mach (StackFromList (s :: ss)) r (Time t)) =
     comp (Mach
             (StackFromList (s :: s :: ss))
             r
             (Time (t + Instruction.timeDUP)))
+--handle DUP instruction stack underflow exception.
 eval DUP (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the SHL instruction.
 eval (SHL n) (Mach s (Reg a) (Time t)) =
     comp (Mach
             s
             (Reg (shl a n))
             (Time (t + Instruction.timeSHL)))
+--execute the SHR instruction.
 eval (SHR n) (Mach s (Reg a) (Time t)) =
     comp (Mach
             s
             (Reg (shr a n))
             (Time (t + Instruction.timeSHR)))
+--execute the USHR instruction.
 eval (USHR n) (Mach s (Reg a) (Time t)) =
     comp (Mach
             s
             (Reg (ushr a n))
             (Time (t + Instruction.timeUSHR)))
+--execute the AND instruction.
 eval AND (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (a `prim__andB64` s))
             (Time (t + Instruction.timeAND)))
+--handle AND instruction stack underflow exception.
 eval AND (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the OR instruction.
 eval OR (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (a `prim__orB64` s))
             (Time (t + Instruction.timeOR)))
+--handle OR instruction stack underflow exception.
 eval OR (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the XOR instruction.
 eval XOR (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (a `prim__xorB64` s))
             (Time (t + Instruction.timeXOR)))
+--handle XOR instruction stack underflow exception.
 eval XOR (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the EQ instruction.
 eval EQ (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (if a == s then 1 else 0))
             (Time (t + Instruction.timeEQ)))
+--handle EQ instruction stack underflow exception.
 eval EQ (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the LT instruction.
 eval LT (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (if a < s then 1 else 0))
             (Time (t + Instruction.timeLT)))
+--handle LT instruction stack underflow exception.
 eval LT (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the GT instruction.
 eval GT (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (if a > s then 1 else 0))
             (Time (t + Instruction.timeGT)))
+--handle GT instruction stack underflow exception.
 eval GT (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the LE instruction.
 eval LE (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (if a <= s then 1 else 0))
             (Time (t + Instruction.timeLE)))
+--handle LE instruction stack underflow exception.
 eval LE (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the GE instruction.
 eval GE (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (if a >= s then 1 else 0))
             (Time (t + Instruction.timeLE)))
+--handle GE instruction stack underflow exception.
 eval GE (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the ADD instruction.
 eval ADD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (a + s))
             (Time (t + Instruction.timeADD)))
+--handle ADD instruction stack underflow exception.
 eval ADD (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the SUB instruction.
 eval SUB (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (a `prim__subB64` s))
             (Time (t + Instruction.timeSUB)))
+--handle SUB instruction stack underflow exception.
 eval SUB (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the MUL instruction.
 eval MUL (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) =
     comp (Mach
             (StackFromList ss)
             (Reg (a * s))
             (Time (t + Instruction.timeMUL)))
+--handle MUL instruction stack underflow exception.
 eval MUL (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the MOD instruction.
 eval MOD (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) = do
     res <- evalMod a s
     comp (Mach
             (StackFromList ss)
             (Reg res)
             (Time (t + Instruction.timeMOD)))
+--handle MOD instruction stack underflow exception.
 eval MOD (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the DIV instruction.
 eval DIV (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) = do
     res <- evalDiv a s
     comp (Mach
             (StackFromList ss)
             (Reg res)
             (Time (t + Instruction.timeDIV)))
+--handle DIV instruction stack underflow exception.
 eval DIV (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
 eval _ _ = exception (NotImplementedException "Unknown instruction.")
