@@ -68,6 +68,8 @@ evalDiv x 0 = Left DivideByZeroException
 --since y is non-zero, there is no longer a hole. Force totality.
 evalDiv x y = assert_total $ Right $ x `prim__udivB64` y
 
+--Evaluate a single instruction in our virtual machine, and update machine state
+--accordingly.
 public export
 eval : Instruction -> Machine -> Either MachineException Machine
 --execute the NOP instruction.
