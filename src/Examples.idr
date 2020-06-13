@@ -1,5 +1,6 @@
 module Examples
 
+import Data.So
 import Instruction
 import Machine
 import Prelude.Monad
@@ -24,14 +25,36 @@ onePlusOneSpec = Refl
 
 --x * y + z instructions
 private
-xyPlusZInsttr : List Instruction
-xyPlusZInsttr =
+xyPlusZInstr : List Instruction
+xyPlusZInstr =
     [MUL,
      ADD]
 
 --proof that running this example results in the symbol x * y + z
 private
 xyPlusZSpec : {x, y, z : Bits64}
-                -> callFunction Examples.xyPlusZInsttr [x, y, z]
+                -> callFunction Examples.xyPlusZInstr [x, y, z]
                         = Right (x * y + z)
 xyPlusZSpec = Refl
+
+--x / y instructions
+private
+xDivYInstr : List Instruction
+xDivYInstr =
+    [DIV]
+
+--proof that we can divide x by y when y is not 0.
+private
+xDivYSpec : (x : Bits64) -> (y : Bits64) -> So (y /= 0)
+            -> callFunction Examples.xDivYInstr [x, y]
+                = Right (prim__udivB64 x y)
+xDivYSpec x y l with (y == 0)
+    | True = absurd l
+    | False = Refl
+
+--proof that if we attempt to divide by zero, we get an exception.
+private
+xDivZeroSpec : (x : Bits64)
+            -> callFunction Examples.xDivYInstr [x, 0]
+                = Left DivideByZeroException
+xDivZeroSpec x = Refl
