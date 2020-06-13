@@ -13,6 +13,7 @@ data Instruction =
     | DUP
     | SHL Nat
     | SHR Nat
+    | USHR Nat
     | AND
     | OR
     | XOR
@@ -79,6 +80,13 @@ timeSHL = 2
 export
 timeSHR : Bits64
 timeSHR = 2
+
+--The time to execute a USHR instruction
+--READ IMM (1 ins)
+--SHIFT (1 ins)
+export
+timeUSHR : Bits64
+timeUSHR = 2
 
 --The time to execute an AND instruction
 --READ STACK (1 ins)
