@@ -241,6 +241,38 @@ eval DIV (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
 eval _ _ = exception (NotImplementedException "Unknown instruction.")
 
+--evaluate a sequence of instructions
+public export
+evalSequence : List Instruction -> Machine -> Either MachineException Machine
+evalSequence ins mach =
+    foldlM (flip eval) mach ins
+
+--push arguments into a machine
+public export
+pushArgs : List Bits64 -> Machine -> Either MachineException Machine
+pushArgs [] mach = Right mach
+pushArgs (x :: []) (Mach s (Reg _) (Time t)) =
+    Right $ Mach s (Reg x) (Time (t + Instruction.timePUSH))
+pushArgs (x :: xs) (Mach (StackFromList ss) r (Time t)) =
+    pushArgs xs
+            (Mach
+                (StackFromList (x ::ss))
+                r
+                (Time (t + Instruction.timePUSH)))
+
+--evaluate a function with a given list of arguments
+public export
+evalFunction : List Instruction -> List Bits64 -> Machine
+                -> Either MachineException Machine
+evalFunction ins args mach =
+    pushArgs (reverse args) mach >>= evalSequence ins
+
+--call a function, returning its return value according to the ABI.
+public export
+callFunction : List Instruction -> List Bits64 -> Either MachineException Bits64
+callFunction ins args =
+    evalFunction ins args emptyMachine >>= (\x => pure $ machineRegister x)
+
 --The NOP instruction takes one cycle and does not otherwise change machine
 --state.
 export
