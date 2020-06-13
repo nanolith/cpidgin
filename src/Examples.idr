@@ -47,7 +47,7 @@ xDivYInstr =
 private
 xDivYSpec : (x : Bits64) -> (y : Bits64) -> So (y /= 0)
             -> callFunction Examples.xDivYInstr [x, y]
-                = Right (prim__udivB64 x y)
+                = Right (prim__sdivB64 x y)
 xDivYSpec x y l with (y == 0)
     | True = absurd l
     | False = Refl

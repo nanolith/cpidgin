@@ -64,10 +64,10 @@ evalMod x y = assert_total $ Right $ x `prim__uremB64` y
 public export total
 evalDiv : Bits64 -> Bits64 -> Either MachineException Bits64
 evalDiv x y with (y == 0)
---the zero case has a hole in udiv, so we throw an exception
+--the zero case has a hole in sdiv, so we throw an exception
     | True  = Left DivideByZeroException
 --since y is non-zero, there is no longer a hole. Force totality.
-    | False = assert_total $ Right $ x `prim__udivB64` y
+    | False = assert_total $ Right $ x `prim__sdivB64` y
 
 --Evaluate a single instruction in our virtual machine, and update machine state
 --accordingly.
