@@ -2,6 +2,7 @@ module Machine
 
 import Data.Bits
 import Data.List
+import Data.So
 import Instruction
 
 public export
@@ -68,6 +69,14 @@ evalDiv x y with (y == 0)
     | True  = Left DivideByZeroException
 --since y is non-zero, there is no longer a hole. Force totality.
     | False = assert_total $ Right $ x `prim__sdivB64` y
+
+public export total
+evalUDiv : Bits64 -> Bits64 -> Either MachineException Bits64
+evalUDiv x y with (y == 0)
+--the zero case has a hole in sdiv, so we throw an exception
+    | True  = Left DivideByZeroException
+--since y is non-zero, there is no longer a hole. Force totality.
+    | False = assert_total $ Right $ x `prim__udivB64` y
 
 --Evaluate a single instruction in our virtual machine, and update machine state
 --accordingly.
@@ -240,6 +249,17 @@ eval DIV (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) = do
 --handle DIV instruction stack underflow exception.
 eval DIV (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
+--execute the UDIV instruction.
+eval UDIV (Mach (StackFromList (s :: ss)) (Reg a) (Time t)) = do
+    res <- evalUDiv a s
+    comp (Mach
+            (StackFromList ss)
+            (Reg res)
+            (Time (t + Instruction.timeUDIV)))
+--handle UDIV instruction stack underflow exception.
+eval UDIV (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
+--handle any other case
 eval _ _ = exception (NotImplementedException "Unknown instruction.")
 
 --evaluate a sequence of instructions
@@ -614,3 +634,32 @@ evalDIVDivideByZeroSpec : {ss : List Bits64} -> {s, a, t : Bits64}
                            (Mach (StackFromList (0 :: ss)) (Reg a) (Time t))
                             = exception DivideByZeroException
 evalDIVDivideByZeroSpec = Refl
+
+--The UDIV instruction does an unsigned divide of the register by the top of
+--stack.
+export
+evalUDIVHappySpec : {ss : List Bits64} -> {a, t : Bits64} -> (s : Bits64)
+                    -> So (s /= 0)
+                    -> eval UDIV
+                           (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
+                        = comp (Mach
+                                    (StackFromList ss)
+                                    (Reg (prim__udivB64 a s))
+                                    (Time (t + Instruction.timeUDIV)))
+evalUDIVHappySpec s l with (s == 0)
+    | True  = absurd l
+    | False = Refl
+
+--The UDIV instruction underflows the stack if the stack is empty.
+export
+evalUDIVUnderflowSpec : eval UDIV (Mach (StackFromList []) _ _)
+                            = exception StackUnderflowException
+evalUDIVUnderflowSpec = Refl
+
+--The UDIV instruction causes a DivideByZeroException the top of stack is zero.
+export
+evalUDIVDivideByZeroSpec : {ss : List Bits64} -> {s, a, t : Bits64}
+                        -> eval UDIV
+                           (Mach (StackFromList (0 :: ss)) (Reg a) (Time t))
+                            = exception DivideByZeroException
+evalUDIVDivideByZeroSpec = Refl

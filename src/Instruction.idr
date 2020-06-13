@@ -26,6 +26,7 @@ data Instruction =
     | SUB
     | MUL
     | DIV
+    | UDIV
     | MOD
 
 --The time to execute a NOP instruction.
@@ -195,6 +196,15 @@ timeMUL = 8
 export
 timeDIV : Bits64
 timeDIV = 8
+
+--The time to execute a UDIV instruction
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--UDIV (5 ins)
+--FETCH (1 ins)
+export
+timeUDIV : Bits64
+timeUDIV = 8
 
 --The time to execute a MOD instruction
 --READ STACK (1 ins)
