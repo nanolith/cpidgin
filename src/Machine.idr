@@ -116,15 +116,6 @@ eval POP (Mach (StackFromList (s :: ss)) _ (Time t)) =
 --handle POP instruction stack underflow exception.
 eval POP (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
---execute the DUP instruction.
-eval DUP (Mach (StackFromList (s :: ss)) r (Time t)) =
-    comp (Mach
-            (StackFromList (s :: s :: ss))
-            r
-            (Time (t + Instruction.timeDUP)))
---handle DUP instruction stack underflow exception.
-eval DUP (Mach (StackFromList []) _ _) =
-    exception StackUnderflowException
 --execute the SEL instruction
 eval (SEL n) (Mach (StackFromList (s :: ss)) _ (Time t)) = do
     (val, ss') <- readList n [] (s :: ss)
@@ -357,22 +348,6 @@ export
 evalPOPUnderflowSpec : eval POP (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalPOPUnderflowSpec = Refl
-
---The DUP instruction duplicates the top of the stack.
-export
-evalDUPHappySpec : {ss : List Bits64} -> {r : Register} -> {s, t : Bits64}
-                    -> eval DUP (Mach (StackFromList (s :: ss)) r (Time t))
-                        = comp (Mach
-                                    (StackFromList (s :: s :: ss))
-                                    r
-                                    (Time (t + Instruction.timeDUP)))
-evalDUPHappySpec = Refl
-
---The DUP instruction underflows the stack if the stack is empty.
-export
-evalDUPUnderflowSpec : eval DUP (Mach (StackFromList []) _ _)
-                        = exception StackUnderflowException
-evalDUPUnderflowSpec = Refl
 
 --The SEL instruction reads the stack at the given offset into the register.
 export
