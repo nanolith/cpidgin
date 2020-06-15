@@ -79,6 +79,18 @@ evalUDiv x y with (y == 0)
 --since y is non-zero, there is no longer a hole. Force totality.
     | False = assert_total $ Right $ x `prim__udivB64` y
 
+public export total
+dupList : Nat -> Bits64 -> List Bits64 -> List Bits64
+dupList Z _ ss = ss
+dupList (S n) s ss = dupList n s (s :: ss)
+
+public export total
+readList : Nat -> List Bits64 -> List Bits64
+           -> Either MachineException (Bits64, List Bits64)
+readList Z ls (r :: rs) = Right (r, reverse ls ++ rs)
+readList _ ls [] = Left StackUnderflowException
+readList (S n) ls (r :: rs) = readList n (r :: ls) rs
+
 --Evaluate a single instruction in our virtual machine, and update machine state
 --accordingly.
 public export
@@ -112,6 +124,16 @@ eval DUP (Mach (StackFromList (s :: ss)) r (Time t)) =
             (Time (t + Instruction.timeDUP)))
 --handle DUP instruction stack underflow exception.
 eval DUP (Mach (StackFromList []) _ _) =
+    exception StackUnderflowException
+--execute the SEL instruction
+eval (SEL n) (Mach (StackFromList (s :: ss)) _ (Time t)) = do
+    (val, ss') <- readList n [] (s :: ss)
+    comp (Mach
+            (StackFromList ss')
+            (Reg val)
+            (Time (t + Instruction.timeSEL)))
+--handle SEL instruction stack underflow exception.
+eval (SEL _) (Mach (StackFromList []) _ _) =
     exception StackUnderflowException
 --execute the SHL instruction.
 eval (SHL n) (Mach s (Reg a) (Time t)) =
@@ -351,6 +373,27 @@ export
 evalDUPUnderflowSpec : eval DUP (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalDUPUnderflowSpec = Refl
+
+--The SEL instruction reads the stack at the given offset into the register.
+export
+evalSELHappySpec : (ss : List Bits64) -> (s, t : Bits64) -> (r : Register)
+                    -> (n : Nat)
+                    -> eval (SEL n)
+                            (Mach (StackFromList (dupList (S n) s [] ++ ss))
+                                   r (Time t))
+                        = comp (Mach
+                                    (StackFromList (dupList n s [] ++ ss))
+                                    (Reg s)
+                                    (Time (t + Instruction.timeSEL)))
+evalSELHappySpec ss s t r Z = Refl
+evalSELHappySpec ss s t r (S m) = let prf = evalSELHappySpec ss s t r (S m) in
+                      rewrite prf in Refl
+
+--The SEL instruction underflows the stack if the stack is empty.
+export
+evalSELUnderflowSpec : eval (SEL _) (Mach (StackFromList []) _ _)
+                            = exception StackUnderflowException
+evalSELUnderflowSpec = Refl
 
 --The SHL instruction shifts the register to the left by the IMM number of bits.
 export

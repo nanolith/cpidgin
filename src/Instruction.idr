@@ -11,6 +11,7 @@ data Instruction =
     | PUSH
     | POP
     | DUP
+    | SEL Nat
     | SHL Nat
     | SHR Nat
     | USHR Nat
@@ -67,6 +68,14 @@ timePOP = 3
 export
 timeDUP : Bits64
 timeDUP = 3
+
+--The time to execute a SEL instruction.
+--READ STACK (1 ins)
+--DECREMENT STACK (1 ins)
+--FETCH (1 ins)
+export
+timeSEL : Bits64
+timeSEL = 3
 
 --The time to execute a SHL instruction
 --READ IMM (1 ins)

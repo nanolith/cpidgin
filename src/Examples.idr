@@ -58,3 +58,49 @@ xDivZeroSpec : (x : Bits64)
             -> callFunction Examples.xDivYInstr [x, 0]
                 = Left DivideByZeroException
 xDivZeroSpec x = Refl
+
+--x*x*z + y*y*z + x*y*z instructions
+private
+xxzPlusyyzPlusxyzInstr : List Instruction
+xxzPlusyyzPlusxyzInstr =
+    [PUSH,
+     PUSH,
+     MUL,
+     PUSH,
+     SEL 3,
+     PUSH,
+     PUSH,
+     SEL 2,
+     MUL,
+     PUSH,
+     SEL 3,
+     PUSH,
+     PUSH,
+     MUL,
+     PUSH,
+     SEL 3,
+     PUSH,
+     PUSH,
+     SEL 2,
+     MUL,
+     PUSH,
+     SEL 3,
+     ADD,
+     PUSH,
+     SEL 1,
+     PUSH,
+     SEL 2,
+     PUSH,
+     SEL 3,
+     MUL,
+     MUL,
+     PUSH,
+     SEL 1,
+     ADD]
+
+--proof that running this example results in the symbol x*x*z + y*y*z + x*y*z
+private
+xxzPlusyyzPlusxyzSpec : {x, y, z : Bits64}
+                -> callFunction Examples.xxzPlusyyzPlusxyzInstr [x, y, z]
+                        = Right (x*x*z + y*y*z + x*y*z)
+xxzPlusyyzPlusxyzSpec = Refl
