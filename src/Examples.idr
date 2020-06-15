@@ -63,40 +63,18 @@ xDivZeroSpec x = Refl
 private
 xxzPlusyyzPlusxyzInstr : List Instruction
 xxzPlusyyzPlusxyzInstr =
-    [PUSH,
-     PUSH,
-     MUL,
-     PUSH,
-     SEL 3,
-     PUSH,
-     PUSH,
-     SEL 2,
-     MUL,
-     PUSH,
-     SEL 3,
-     PUSH,
-     PUSH,
-     MUL,
-     PUSH,
-     SEL 3,
-     PUSH,
-     PUSH,
-     SEL 2,
-     MUL,
-     PUSH,
-     SEL 3,
-     ADD,
-     PUSH,
-     SEL 1,
-     PUSH,
-     SEL 2,
-     PUSH,
-     SEL 3,
-     MUL,
-     MUL,
-     PUSH,
-     SEL 1,
-     ADD]
+     ---
+    [PUSH, PUSH, MUL, PUSH, --x*x
+     SEL 3, PUSH, PUSH, SEL 2, MUL, PUSH, --x*x*z
+     ---
+     SEL 3, PUSH, PUSH, MUL, PUSH, --y*y
+     SEL 3, PUSH, PUSH, SEL 2, MUL, PUSH, --y*y*z
+     ---
+     SEL 3, ADD, PUSH, --x*x*z + y*y*z
+     ---
+     SEL 1, PUSH, SEL 2, PUSH, SEL 3, MUL, MUL, PUSH, --x*y*z
+     ---
+     SEL 1, ADD] --x*x*z + y*y*z + x*y*z
 
 --proof that running this example results in the symbol x*x*z + y*y*z + x*y*z
 private
