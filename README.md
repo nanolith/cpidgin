@@ -1,4 +1,4 @@
 C Pidgin
 ========
 
-C interpreter and proof system written in Idris.
+Interpreter and extraction to LLVM of a C-like language, written in Idris.
