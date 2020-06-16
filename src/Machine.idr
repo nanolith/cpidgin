@@ -310,21 +310,21 @@ callFunction ins args =
 
 --The NOP instruction takes one cycle and does not otherwise change machine
 --state.
-export
+export total
 evalNOPSpec : {s : Stack} -> {r : Register} -> {t : Bits64}
                 -> eval NOP (Mach s r (Time t))
                     = comp (Mach s r (Time (t + Instruction.timeNOP)))
 evalNOPSpec = Refl
 
 --The IMM instruction loads the given immediate value into the register.
-export
+export total
 evalIMMSpec : {s : Stack} -> {i, t : Bits64}
                 -> eval (IMM i) (Mach s _ (Time t))
                     = comp (Mach s (Reg i) (Time (t + Instruction.timeIMM)))
 evalIMMSpec = Refl
 
 --The PUSH instruction writes the register to the stack.
-export
+export total
 evalPUSHSpec : {ss : List Bits64} -> {a, t : Bits64}
                 -> eval PUSH (Mach (StackFromList ss) (Reg a) (Time t))
                     = comp (Mach
@@ -334,7 +334,7 @@ evalPUSHSpec : {ss : List Bits64} -> {a, t : Bits64}
 evalPUSHSpec = Refl
 
 --The POP instruction reads the register from the stack.
-export
+export total
 evalPOPHappySpec : {ss : List Bits64} -> {s, t : Bits64}
                     -> eval POP (Mach (StackFromList (s :: ss)) _ (Time t))
                         = comp (Mach
@@ -344,13 +344,13 @@ evalPOPHappySpec : {ss : List Bits64} -> {s, t : Bits64}
 evalPOPHappySpec = Refl
 
 --The POP instruction underflows the stack if the stack is empty.
-export
+export total
 evalPOPUnderflowSpec : eval POP (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalPOPUnderflowSpec = Refl
 
 --The SEL instruction reads the stack at the given offset into the register.
-export
+export --total
 evalSELHappySpec : (ss : List Bits64) -> (s, t : Bits64) -> (r : Register)
                     -> (n : Nat)
                     -> eval (SEL n)
@@ -365,13 +365,13 @@ evalSELHappySpec ss s t r (S m) = let prf = evalSELHappySpec ss s t r (S m) in
                       rewrite prf in Refl
 
 --The SEL instruction underflows the stack if the stack is empty.
-export
+export total
 evalSELUnderflowSpec : eval (SEL _) (Mach (StackFromList []) _ _)
                             = exception StackUnderflowException
 evalSELUnderflowSpec = Refl
 
 --The SHL instruction shifts the register to the left by the IMM number of bits.
-export
+export total
 evalSHLHappySpec : {n : Nat} -> {s : Stack} -> {a, t : Bits64}
                     -> eval (SHL n)
                             (Mach s (Reg a) (Time t))
@@ -382,7 +382,7 @@ evalSHLHappySpec : {n : Nat} -> {s : Stack} -> {a, t : Bits64}
 evalSHLHappySpec = Refl
 
 --The SHR instruction shifts the reg to the right by the IMM number of bits.
-export
+export total
 evalSHRHappySpec : {n : Nat} -> {s : Stack} -> {a, t : Bits64}
                     -> eval (SHR n)
                             (Mach s (Reg a) (Time t))
@@ -394,7 +394,7 @@ evalSHRHappySpec = Refl
 
 --The USHR instruction shifts the reg to the right by the IMM number of bits,
 --without sign extension.
-export
+export total
 evalUSHRHappySpec : {n : Nat} -> {s : Stack} -> {a, t : Bits64}
                     -> eval (USHR n)
                             (Mach s (Reg a) (Time t))
@@ -406,7 +406,7 @@ evalUSHRHappySpec = Refl
 
 --The AND instruction performs a bitwise and between the top of stack and the
 --register.
-export
+export total
 evalANDHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval AND
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -417,14 +417,14 @@ evalANDHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalANDHappySpec = Refl
 
 --The AND instruction underflows the stack if the stack is empty.
-export
+export total
 evalANDUnderflowSpec : eval AND (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalANDUnderflowSpec = Refl
 
 --The OR instruction performs a bitwise and between the top of stack and the
 --register.
-export
+export total
 evalORHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval OR
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -435,14 +435,14 @@ evalORHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalORHappySpec = Refl
 
 --The OR instruction underflows the stack if the stack is empty.
-export
+export total
 evalORUnderflowSpec : eval OR (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalORUnderflowSpec = Refl
 
 --The XOR instruction performs a bitwise and between the top of stack and the
 --register.
-export
+export total
 evalXORHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval XOR
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -453,14 +453,14 @@ evalXORHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalXORHappySpec = Refl
 
 --The XOR instruction underflows the stack if the stack is empty.
-export
+export total
 evalXORUnderflowSpec : eval XOR (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalXORUnderflowSpec = Refl
 
 --The EQ instruction compares the register with top of stack, setting the
 --register to 1 if equal, and 0 otherwise.
-export
+export total
 evalEQHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval EQ
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -471,14 +471,14 @@ evalEQHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalEQHappySpec = Refl
 
 --The EQ instruction underflows the stack if the stack is empty.
-export
+export total
 evalEQUnderflowSpec : eval EQ (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalEQUnderflowSpec = Refl
 
 --The LT instruction compares the register with top of stack, setting the
 --register to 1 if the register is less than tos, and 0 otherwise.
-export
+export total
 evalLTHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval LT
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -489,14 +489,14 @@ evalLTHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalLTHappySpec = Refl
 
 --The LT instruction underflows the stack if the stack is empty.
-export
+export total
 evalLTUnderflowSpec : eval LT (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalLTUnderflowSpec = Refl
 
 --The GT instruction compares the register with top of stack, setting the
 --register to 1 if the register is greater than tos, and 0 otherwise.
-export
+export total
 evalGTHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval GT
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -507,14 +507,14 @@ evalGTHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalGTHappySpec = Refl
 
 --The GT instruction underflows the stack if the stack is empty.
-export
+export total
 evalGTUnderflowSpec : eval GT (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalGTUnderflowSpec = Refl
 
 --The LE instruction compares the register with top of stack, setting the
 --register to 1 if the register is less than or equal to tos, and 0 otherwise.
-export
+export total
 evalLEHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval LE
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -525,14 +525,14 @@ evalLEHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalLEHappySpec = Refl
 
 --The LE instruction underflows the stack if the stack is empty.
-export
+export total
 evalLEUnderflowSpec : eval LE (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalLEUnderflowSpec = Refl
 
 --The GE instruction compares the register with top of stack, setting the
 --register to 1 if the register is greater than / equal to tos, and 0 otherwise.
-export
+export total
 evalGEHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval GE
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -543,13 +543,13 @@ evalGEHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalGEHappySpec = Refl
 
 --The GE instruction underflows the stack if the stack is empty.
-export
+export total
 evalGEUnderflowSpec : eval GE (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalGEUnderflowSpec = Refl
 
 --The ADD instruction adds the top of stack to the register.
-export
+export total
 evalADDHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval ADD
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -560,13 +560,13 @@ evalADDHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalADDHappySpec = Refl
 
 --The ADD instruction underflows the stack if the stack is empty.
-export
+export total
 evalADDUnderflowSpec : eval ADD (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalADDUnderflowSpec = Refl
 
 --The SUB instruction subtracts the top of stack from the register.
-export
+export total
 evalSUBHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval SUB
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -577,13 +577,13 @@ evalSUBHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalSUBHappySpec = Refl
 
 --The SUB instruction underflows the stack if the stack is empty.
-export
+export total
 evalSUBUnderflowSpec : eval SUB (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalSUBUnderflowSpec = Refl
 
 --The MUL instruction multiplies the top of stack with the register.
-export
+export total
 evalMULHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
                     -> eval MUL
                            (Mach (StackFromList (s :: ss)) (Reg a) (Time t))
@@ -594,14 +594,14 @@ evalMULHappySpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalMULHappySpec = Refl
 
 --The MUL instruction underflows the stack if the stack is empty.
-export
+export total
 evalMULUnderflowSpec : eval MUL (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalMULUnderflowSpec = Refl
 
 --The MOD instruction finds the modulus of the register with respect to the top
 --of stack.
-export
+export --total
 evalMODHappySpec : {ss : List Bits64} -> {a, t : Bits64} -> (s : Bits64)
                     -> So (s /= 0)
                     -> eval MOD
@@ -615,13 +615,13 @@ evalMODHappySpec s l with (s == 0)
     | False = Refl
 
 --The MOD instruction underflows the stack if the stack is empty.
-export
+export total
 evalMODUnderflowSpec : eval MOD (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalMODUnderflowSpec = Refl
 
 --The MOD instruction causes a DivideByZeroException the top of stack is zero.
-export
+export total
 evalMODDivideByZeroSpec : {ss : List Bits64} -> {s, a, t : Bits64}
                         -> eval MOD
                            (Mach (StackFromList (0 :: ss)) (Reg a) (Time t))
@@ -629,7 +629,7 @@ evalMODDivideByZeroSpec : {ss : List Bits64} -> {s, a, t : Bits64}
 evalMODDivideByZeroSpec = Refl
 
 --The DIV instruction divides the register by the top of stack.
-export
+export --total
 evalDIVHappySpec : {ss : List Bits64} -> {a, t : Bits64} -> (s : Bits64)
                     -> So (s /= 0)
                     -> eval DIV
@@ -643,13 +643,13 @@ evalDIVHappySpec s l with (s == 0)
     | False = Refl
 
 --The DIV instruction underflows the stack if the stack is empty.
-export
+export total
 evalDIVUnderflowSpec : eval DIV (Mach (StackFromList []) _ _)
                         = exception StackUnderflowException
 evalDIVUnderflowSpec = Refl
 
 --The DIV instruction causes a DivideByZeroException the top of stack is zero.
-export
+export total
 evalDIVDivideByZeroSpec : {ss : List Bits64} -> {s, a, t : Bits64}
                         -> eval DIV
                            (Mach (StackFromList (0 :: ss)) (Reg a) (Time t))
@@ -658,7 +658,7 @@ evalDIVDivideByZeroSpec = Refl
 
 --The UDIV instruction does an unsigned divide of the register by the top of
 --stack.
-export
+export --total
 evalUDIVHappySpec : {ss : List Bits64} -> {a, t : Bits64} -> (s : Bits64)
                     -> So (s /= 0)
                     -> eval UDIV
@@ -672,13 +672,13 @@ evalUDIVHappySpec s l with (s == 0)
     | False = Refl
 
 --The UDIV instruction underflows the stack if the stack is empty.
-export
+export total
 evalUDIVUnderflowSpec : eval UDIV (Mach (StackFromList []) _ _)
                             = exception StackUnderflowException
 evalUDIVUnderflowSpec = Refl
 
 --The UDIV instruction causes a DivideByZeroException the top of stack is zero.
-export
+export total
 evalUDIVDivideByZeroSpec : {ss : List Bits64} -> {s, a, t : Bits64}
                         -> eval UDIV
                            (Mach (StackFromList (0 :: ss)) (Reg a) (Time t))
