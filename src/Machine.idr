@@ -357,7 +357,7 @@ evalPOPUnderflowSpec = Refl
 --helper lemma for reducing dupList
 export total
 dupListHelperLemma : (ss : List Bits64) -> (s : Bits64) -> (n : Nat)
-                     -> dupList (S n) s ss = s :: dupList n s ss
+                     -> (dupList (S n) s ss) = (s :: dupList n s ss)
 dupListHelperLemma ss s Z = Refl
 dupListHelperLemma ss s (S m) =
     let prf = dupListHelperLemma (s :: ss) s m in
@@ -366,49 +366,54 @@ dupListHelperLemma ss s (S m) =
 --helper lemma for reducing readNth
 export total
 readNthDupListHelperLemma : (ss : List Bits64) -> (s : Bits64) -> (n : Nat)
-                          -> readNth n (dupList n s (s :: ss)) = Right s
+                          -> readNth n (s :: dupList n s ss) = Right s
 readNthDupListHelperLemma ss s Z = Refl
 readNthDupListHelperLemma ss s (S m) =
-    let h1 = dupListHelperLemma (s :: ss) s m in
+    let h1 = dupListHelperLemma ss s m in
     rewrite h1 in
     let h2 = readNthDupListHelperLemma ss s m in
     rewrite h2 in Refl
 
---partial total proof for evalSELHappySpec... tracking down unification error in
+--helper lemma for reducing removeNth
+export total
+removeNthDupListHelperLemma : (ss : List Bits64) -> (s : Bits64) -> (n : Nat)
+                            -> removeNth n (dupList n s (s :: ss))
+                                = dupList n s ss
+removeNthDupListHelperLemma ss s Z = Refl
+removeNthDupListHelperLemma ss s (S m) =
+    let h1 = dupListHelperLemma (s :: ss) s m in
+    rewrite h1 in
+    let h2 = removeNthDupListHelperLemma ss s m in
+    rewrite h2 in
+    let h3 = dupListHelperLemma ss s m in
+    rewrite h3 in Refl
+
+--total proof for evalSELHappySpec... tracking down unification error in
 --Idris.
 
 --The SEL instruction reads the stack at the given offset into the register.
---export total
---evalSELHappySpec : (ss : List Bits64) -> (s, t : Bits64) -> (r : Register)
---                    -> (n : Nat)
---                    -> eval (SEL n)
---                            (Mach (StackFromList (dupList (S n) s ss))
---                                   r (Time t))
---                        = comp (Mach
---                                    (StackFromList (dupList n s ss))
---                                    (Reg s)
---                                    (Time (t + Instruction.timeSEL)))
---evalSELHappySpec ss s t r Z = Refl
---evalSELHappySpec ss s t r (S m) =
---    let h1 = dupListHelperLemma (s :: ss) s m in
---    rewrite h1 in
---    let h2 = readNthDupListHelperLemma ss s m in
---    rewrite h2 in ?bar
-
---old "broken" proof for evalSELHappySpec
-export
+{--
+export total
 evalSELHappySpec : (ss : List Bits64) -> (s, t : Bits64) -> (r : Register)
                     -> (n : Nat)
                     -> eval (SEL n)
-                            (Mach (StackFromList (dupList (S n) s [] ++ ss))
+                            (Mach (StackFromList (dupList (S n) s ss))
                                    r (Time t))
                         = comp (Mach
-                                    (StackFromList (dupList n s [] ++ ss))
+                                    (StackFromList (dupList n s ss))
                                     (Reg s)
                                     (Time (t + Instruction.timeSEL)))
 evalSELHappySpec ss s t r Z = Refl
-evalSELHappySpec ss s t r (S m) = let prf = evalSELHappySpec ss s t r (S m) in
-                      rewrite prf in Refl
+evalSELHappySpec ss s t r (S m) =
+    let h1 = dupListHelperLemma (s :: ss) s m in
+    let h2 = removeNthDupListHelperLemma ss s m in
+    let h3 = dupListHelperLemma ss s m in
+    let h4 = readNthDupListHelperLemma ss s m in
+    rewrite h1 in
+    rewrite h2 in
+    rewrite h3 in
+    rewrite h4 in Refl
+--}
 
 --The SEL instruction underflows the stack if the stack is empty.
 export total
