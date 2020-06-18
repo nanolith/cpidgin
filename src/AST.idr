@@ -20,4 +20,5 @@ public export
 data AST =
       NumericConst Integer (Maybe CType)
     | AddExpr AST AST
+    | SubExpr AST AST
     | ReturnExpr AST
