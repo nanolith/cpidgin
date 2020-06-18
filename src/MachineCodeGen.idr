@@ -31,6 +31,13 @@ genSubExpr : List Instruction -> List Instruction
 genSubExpr x y =
     Right (y ++ [PUSH] ++ x ++ [SUB])
 
+--Generate code for a mul expression.
+public export total
+genMulExpr : List Instruction -> List Instruction
+            -> Either CodeGenerationException (List Instruction)
+genMulExpr x y =
+    Right (y ++ [PUSH] ++ x ++ [MUL])
+
 --Generate Machine Instructions for a given reducible expression.
 public export total
 genReduceExpr : AST -> Either CodeGenerationException (List Instruction)
@@ -46,6 +53,9 @@ genReduceExpr (AddExpr x y) =
 --Reduce a sub expression to a subtraction of its child nodes.
 genReduceExpr (SubExpr x y) =
     join $ pure genSubExpr <*> genReduceExpr x <*> genReduceExpr y
+--Reduce a mul expression to a multiplication of its child nodes.
+genReduceExpr (MulExpr x y) =
+    join $ pure genMulExpr <*> genReduceExpr x <*> genReduceExpr y
 --Unknown mapping from the given AST to a reducible expression.
 genReduceExpr a =
     Left $ InvalidExpressionException "Expecting reducible expression" a
@@ -94,3 +104,17 @@ genReduceSubEvalSpec : (x, y : Integer)
                             = Right
                                 (prim__subB64 (fromInteger x) (fromInteger y))
 genReduceSubEvalSpec x y = Refl
+
+--proof that evaluating the multiplication of two constants results in the same
+--expression in Idris.
+total
+genReduceMulEvalSpec : (x, y : Integer)
+                        -> codeGenToMachineHelper
+                                (genReduceExpr
+                                    (MulExpr
+                                        (NumericConst x Nothing)
+                                        (NumericConst y Nothing)))
+                                >>= (\ins => callFunction ins [])
+                            = Right
+                                (prim__mulB64 (fromInteger x) (fromInteger y))
+genReduceMulEvalSpec x y = Refl

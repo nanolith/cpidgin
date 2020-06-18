@@ -21,4 +21,5 @@ data AST =
       NumericConst Integer (Maybe CType)
     | AddExpr AST AST
     | SubExpr AST AST
+    | MulExpr AST AST
     | ReturnExpr AST
