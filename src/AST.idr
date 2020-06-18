@@ -18,4 +18,5 @@ data CType =
 --Expressions that are part of the AST
 public export
 data AST =
-      ReturnExpr AST
+      NumericConst Integer (Maybe CType)
+    | ReturnExpr AST

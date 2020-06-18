@@ -10,12 +10,39 @@ public export
 data CodeGenerationException =
     InvalidExpressionException String AST
 
---Generate Machine Instructions for a given reducible expression
+--Generate code for a numeric constant.
+public export total
+genLoadConstant : AST -> Either CodeGenerationException (List Instruction)
+genLoadConstant (NumericConst i _) =
+    Right [IMM (fromInteger i)]
+genLoadConstant a = Left $ InvalidExpressionException "Expecting NumericConst" a
+
+--Generate Machine Instructions for a given reducible expression.
 public export total
 genReduceExpr : AST -> Either CodeGenerationException (List Instruction)
+--Reduce a numeric constant.
+genReduceExpr (NumericConst a t) =
+    genLoadConstant $ NumericConst a t
 --A return expression is essentially a NOP, so unfold it.
 genReduceExpr (ReturnExpr a) =
     genReduceExpr a
---Unknown mapping from the given AST to a reducible expression
+--Unknown mapping from the given AST to a reducible expression.
 genReduceExpr a =
     Left $ InvalidExpressionException "Expecting reducible expression" a
+
+--helper for proofs below to convert between code generation and machine
+--evaluation environments.
+total
+codeGenToMachineHelper : Either CodeGenerationException (List Instruction)
+                       -> Either MachineException (List Instruction)
+codeGenToMachineHelper (Right a) = Right a
+codeGenToMachineHelper (Left a) = Left (NotImplementedException "x")
+
+--proof that evaluating the loading of a constant results in that constant.
+total
+genReduceConstantEvalSpec : (c : Integer)
+                            -> codeGenToMachineHelper
+                                    (genReduceExpr (NumericConst c Nothing))
+                                        >>= (\ins => callFunction ins [])
+                                = Right (fromInteger c)
+genReduceConstantEvalSpec c = Refl
