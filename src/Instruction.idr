@@ -31,7 +31,7 @@ data Instruction =
 
 --The time to execute a NOP instruction.
 --FETCH (1 ins)
-export
+public export
 timeNOP : Bits64
 timeNOP = 1
 
@@ -39,7 +39,7 @@ timeNOP = 1
 --READ IMM (1 ins)
 --WRITE REG (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeIMM : Bits64
 timeIMM = 3
 
@@ -47,7 +47,7 @@ timeIMM = 3
 --WRITE STACK (1 ins)
 --INCREMENT STACK (1 ins)
 --FETCH (1 ins)
-export
+public export
 timePUSH : Bits64
 timePUSH = 3
 
@@ -55,7 +55,7 @@ timePUSH = 3
 --READ STACK (1 ins)
 --DECREMENT STACK (1 ins)
 --FETCH (1 ins)
-export
+public export
 timePOP : Bits64
 timePOP = 3
 
@@ -63,28 +63,28 @@ timePOP = 3
 --READ STACK (1 ins)
 --DECREMENT STACK (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeSEL : Bits64
 timeSEL = 3
 
 --The time to execute a SHL instruction
 --READ IMM (1 ins)
 --SHIFT (1 ins)
-export
+public export
 timeSHL : Bits64
 timeSHL = 2
 
 --The time to execute a SHR instruction
 --READ IMM (1 ins)
 --SHIFT (1 ins)
-export
+public export
 timeSHR : Bits64
 timeSHR = 2
 
 --The time to execute a USHR instruction
 --READ IMM (1 ins)
 --SHIFT (1 ins)
-export
+public export
 timeUSHR : Bits64
 timeUSHR = 2
 
@@ -93,7 +93,7 @@ timeUSHR = 2
 --DECREMENT STACK (1 ins)
 --ADD (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeAND : Bits64
 timeAND = 4
 
@@ -102,7 +102,7 @@ timeAND = 4
 --DECREMENT STACK (1 ins)
 --OR (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeOR : Bits64
 timeOR = 4
 
@@ -111,7 +111,7 @@ timeOR = 4
 --DECREMENT STACK (1 ins)
 --XOR (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeXOR : Bits64
 timeXOR = 4
 
@@ -120,7 +120,7 @@ timeXOR = 4
 --DECREMENT STACK (1 ins)
 --EQ (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeEQ : Bits64
 timeEQ = 4
 
@@ -129,7 +129,7 @@ timeEQ = 4
 --DECREMENT STACK (1 ins)
 --LT (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeLT : Bits64
 timeLT = 4
 
@@ -138,7 +138,7 @@ timeLT = 4
 --DECREMENT STACK (1 ins)
 --LE (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeLE : Bits64
 timeLE = 4
 
@@ -147,7 +147,7 @@ timeLE = 4
 --DECREMENT STACK (1 ins)
 --GE (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeGE : Bits64
 timeGE = 4
 
@@ -156,7 +156,7 @@ timeGE = 4
 --DECREMENT STACK (1 ins)
 --GT (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeGT : Bits64
 timeGT = 4
 
@@ -165,7 +165,7 @@ timeGT = 4
 --DECREMENT STACK (1 ins)
 --ADD (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeADD : Bits64
 timeADD = 4
 
@@ -174,7 +174,7 @@ timeADD = 4
 --DECREMENT STACK (1 ins)
 --SUB (1 ins)
 --FETCH (1 ins)
-export
+public export
 timeSUB : Bits64
 timeSUB = 4
 
@@ -183,7 +183,7 @@ timeSUB = 4
 --DECREMENT STACK (1 ins)
 --MUL (5 ins)
 --FETCH (1 ins)
-export
+public export
 timeMUL : Bits64
 timeMUL = 8
 
@@ -192,7 +192,7 @@ timeMUL = 8
 --DECREMENT STACK (1 ins)
 --DIV (5 ins)
 --FETCH (1 ins)
-export
+public export
 timeDIV : Bits64
 timeDIV = 8
 
@@ -201,7 +201,7 @@ timeDIV = 8
 --DECREMENT STACK (1 ins)
 --UDIV (5 ins)
 --FETCH (1 ins)
-export
+public export
 timeUDIV : Bits64
 timeUDIV = 8
 
@@ -210,6 +210,6 @@ timeUDIV = 8
 --DECREMENT STACK (1 ins)
 --MOD (5 ins)
 --FETCH (1 ins)
-export
+public export
 timeMOD : Bits64
 timeMOD = 8
