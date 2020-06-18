@@ -19,4 +19,5 @@ data CType =
 public export
 data AST =
       NumericConst Integer (Maybe CType)
+    | AddExpr AST AST
     | ReturnExpr AST

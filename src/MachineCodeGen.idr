@@ -17,6 +17,13 @@ genLoadConstant (NumericConst i _) =
     Right [IMM (fromInteger i)]
 genLoadConstant a = Left $ InvalidExpressionException "Expecting NumericConst" a
 
+--Generate code for an add expression.
+public export total
+genAddExpr : List Instruction -> List Instruction
+            -> Either CodeGenerationException (List Instruction)
+genAddExpr x y =
+    Right (y ++ [PUSH] ++ x ++ [ADD])
+
 --Generate Machine Instructions for a given reducible expression.
 public export total
 genReduceExpr : AST -> Either CodeGenerationException (List Instruction)
@@ -26,6 +33,9 @@ genReduceExpr (NumericConst a t) =
 --A return expression is essentially a NOP, so unfold it.
 genReduceExpr (ReturnExpr a) =
     genReduceExpr a
+--Reduce an add expression to an addition of its child nodes.
+genReduceExpr (AddExpr x y) =
+    join $ pure genAddExpr <*> genReduceExpr x <*> genReduceExpr y
 --Unknown mapping from the given AST to a reducible expression.
 genReduceExpr a =
     Left $ InvalidExpressionException "Expecting reducible expression" a
@@ -46,3 +56,17 @@ genReduceConstantEvalSpec : (c : Integer)
                                         >>= (\ins => callFunction ins [])
                                 = Right (fromInteger c)
 genReduceConstantEvalSpec c = Refl
+
+--proof that evaluating the addition of two constants results in the same
+--expression in Idris.
+total
+genReduceAddEvalSpec : (x, y : Integer)
+                        -> codeGenToMachineHelper
+                                (genReduceExpr
+                                    (AddExpr
+                                        (NumericConst x Nothing)
+                                        (NumericConst y Nothing)))
+                                >>= (\ins => callFunction ins [])
+                            = Right
+                                (prim__addB64 (fromInteger x) (fromInteger y))
+genReduceAddEvalSpec x y = Refl
