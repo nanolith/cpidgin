@@ -52,6 +52,13 @@ genOrExpr : List Instruction -> List Instruction
 genOrExpr x y =
     Right (y ++ [PUSH] ++ x ++ [OR])
 
+--Generate code for an xor expression.
+public export total
+genXorExpr : List Instruction -> List Instruction
+            -> Either CodeGenerationException (List Instruction)
+genXorExpr x y =
+    Right (y ++ [PUSH] ++ x ++ [XOR])
+
 --Generate Machine Instructions for a given reducible expression.
 public export total
 genReduceExpr : AST -> Either CodeGenerationException (List Instruction)
@@ -76,6 +83,9 @@ genReduceExpr (AndExpr x y) =
 --Reduce an or expression to a logical or of its child nodes.
 genReduceExpr (OrExpr x y) =
     join $ pure genOrExpr <*> genReduceExpr x <*> genReduceExpr y
+--Reduce an xor expression to a logical xor of its child nodes
+genReduceExpr (XorExpr x y) =
+    join $ pure genXorExpr <*> genReduceExpr x <*> genReduceExpr y
 --Unknown mapping from the given AST to a reducible expression.
 genReduceExpr a =
     Left $ InvalidExpressionException "Expecting reducible expression" a
@@ -166,3 +176,17 @@ genReduceOrEvalSpec : (x, y : Integer)
                             = Right
                                 (prim__orB64 (fromInteger x) (fromInteger y))
 genReduceOrEvalSpec x y = Refl
+
+--proof that evaluating the logical XOR of two constants results in the same
+--expression in Idris.
+total
+genReduceXorEvalSpec : (x, y : Integer)
+                        -> codeGenToMachineHelper
+                                (genReduceExpr
+                                    (XorExpr
+                                        (NumericConst x Nothing)
+                                        (NumericConst y Nothing)))
+                                >>= (\ins => callFunction ins [])
+                            = Right
+                                (prim__xorB64 (fromInteger x) (fromInteger y))
+genReduceXorEvalSpec x y = Refl
