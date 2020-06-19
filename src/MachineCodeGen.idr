@@ -38,6 +38,13 @@ genMulExpr : List Instruction -> List Instruction
 genMulExpr x y =
     Right (y ++ [PUSH] ++ x ++ [MUL])
 
+--Generate code for an and expression.
+public export total
+genAndExpr : List Instruction -> List Instruction
+            -> Either CodeGenerationException (List Instruction)
+genAndExpr x y =
+    Right (y ++ [PUSH] ++ x ++ [AND])
+
 --Generate Machine Instructions for a given reducible expression.
 public export total
 genReduceExpr : AST -> Either CodeGenerationException (List Instruction)
@@ -56,6 +63,9 @@ genReduceExpr (SubExpr x y) =
 --Reduce a mul expression to a multiplication of its child nodes.
 genReduceExpr (MulExpr x y) =
     join $ pure genMulExpr <*> genReduceExpr x <*> genReduceExpr y
+--Reduce an and expression to a logical and of its child nodes.
+genReduceExpr (AndExpr x y) =
+    join $ pure genAndExpr <*> genReduceExpr x <*> genReduceExpr y
 --Unknown mapping from the given AST to a reducible expression.
 genReduceExpr a =
     Left $ InvalidExpressionException "Expecting reducible expression" a
@@ -118,3 +128,17 @@ genReduceMulEvalSpec : (x, y : Integer)
                             = Right
                                 (prim__mulB64 (fromInteger x) (fromInteger y))
 genReduceMulEvalSpec x y = Refl
+
+--proof that evaluating the logical AND of two constants results in the same
+--expression in Idris.
+total
+genReduceAndEvalSpec : (x, y : Integer)
+                        -> codeGenToMachineHelper
+                                (genReduceExpr
+                                    (AndExpr
+                                        (NumericConst x Nothing)
+                                        (NumericConst y Nothing)))
+                                >>= (\ins => callFunction ins [])
+                            = Right
+                                (prim__andB64 (fromInteger x) (fromInteger y))
+genReduceAndEvalSpec x y = Refl
