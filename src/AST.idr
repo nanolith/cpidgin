@@ -23,4 +23,5 @@ data AST =
     | SubExpr AST AST
     | MulExpr AST AST
     | AndExpr AST AST
+    | OrExpr AST AST
     | ReturnExpr AST
