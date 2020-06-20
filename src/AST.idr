@@ -46,6 +46,7 @@ Show AST where
     show (NumericConst i (Just ty)) = "(" ++ show ty ++ ")"
     show (AddExpr lhs rhs) = (show lhs) ++ "+" ++ (show rhs)
     show (SubExpr lhs rhs) = (show lhs) ++ "-" ++ (show rhs)
+    show (MulExpr lhs rhs) = (show lhs) ++ "*" ++ (show rhs)
     show (AndExpr lhs rhs) = (show lhs) ++ "&" ++ (show rhs)
     show (OrExpr lhs rhs) = (show lhs) ++ "|" ++ (show rhs)
     show (XorExpr lhs rhs) = (show lhs) ++ "^" ++ (show rhs)
