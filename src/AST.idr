@@ -1,7 +1,5 @@
 module AST
 
-%hide Prelude.List.(++)
-
 --Primitive Types
 public export
 data CType =
