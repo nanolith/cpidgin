@@ -1,5 +1,7 @@
 module AST
 
+%hide Prelude.List.(++)
+
 --Primitive Types
 public export
 data CType =
@@ -39,15 +41,19 @@ data AST =
     | XorExpr AST AST
     | ReturnExpr AST
 
+--show an AST node wrapped in parenthesis
+showParen : Show a => a -> String
+showParen x = "(" ++ (show x) ++ ")"
+
 --Show implementation for AST
 public export
 Show AST where
     show (NumericConst i Nothing) = show i
-    show (NumericConst i (Just ty)) = "(" ++ show ty ++ ")"
-    show (AddExpr lhs rhs) = (show lhs) ++ "+" ++ (show rhs)
-    show (SubExpr lhs rhs) = (show lhs) ++ "-" ++ (show rhs)
-    show (MulExpr lhs rhs) = (show lhs) ++ "*" ++ (show rhs)
-    show (AndExpr lhs rhs) = (show lhs) ++ "&" ++ (show rhs)
-    show (OrExpr lhs rhs) = (show lhs) ++ "|" ++ (show rhs)
-    show (XorExpr lhs rhs) = (show lhs) ++ "^" ++ (show rhs)
-    show (ReturnExpr x) = "return " ++ (show x)
+    show (NumericConst i (Just ty)) = (showParen ty) ++ (showParen i)
+    show (AddExpr lhs rhs) = (showParen lhs) ++ "+" ++ (showParen rhs)
+    show (SubExpr lhs rhs) = (showParen lhs) ++ "-" ++ (showParen rhs)
+    show (MulExpr lhs rhs) = (showParen lhs) ++ "*" ++ (showParen rhs)
+    show (AndExpr lhs rhs) = (showParen lhs) ++ "&" ++ (showParen rhs)
+    show (OrExpr lhs rhs)  = (showParen lhs) ++ "|" ++ (showParen rhs)
+    show (XorExpr lhs rhs) = (showParen lhs) ++ "^" ++ (showParen rhs)
+    show (ReturnExpr x) = "return " ++ (showParen x)
