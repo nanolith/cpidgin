@@ -31,3 +31,23 @@ charNotEOFFailureSpec : (ch,notch : Char) -> So (ch == ch)
 charNotEOFFailureSpec ch notch l with (ch == ch)
     | True = Refl
     | False = absurd l
+
+--Helper function for singleStringParseAppSpec
+singleStringHelperApp : Parser String
+singleStringHelperApp = pure singleton <*> char 'x'
+
+--Proof that we can build a string using our single string helper.
+singleStringParseAppSpec :
+    runParser ParserCombinatorTheorems.singleStringHelperApp ['x'] = Right "x"
+singleStringParseAppSpec = Refl
+
+--Helper function for singleStringParseMonadSpec
+singleStringHelperMonad : Parser String
+singleStringHelperMonad = do
+    x <- char 'x'
+    pure $ singleton x
+
+--Proof that we can build a string using our single string helper.
+singleStringParseMonadSpec :
+    runParser ParserCombinatorTheorems.singleStringHelperMonad ['x'] = Right "x"
+singleStringParseMonadSpec = Refl

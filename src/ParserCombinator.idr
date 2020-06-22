@@ -16,6 +16,22 @@ runParser (MkParser p) cs =
         [(res, rs)] => Left "Did not consume all input."
         _ => Left "Parser error."
 
+--We can make the Parser a Functor.
+Functor Parser where
+    map f (MkParser cs) = MkParser (\s => [(f a, b) | (a, b) <- cs s])
+
+--We can make the Parser an Applicative.
+Applicative Parser where
+    pure a = MkParser (\s => [(a, s)])
+    (MkParser cs1) <*> (MkParser cs2) =
+        MkParser (\s =>
+            [(f a, s2) | (f, s1) <- cs1 s, (a, s2) <- cs2 s1])
+
+--We can make the Parser a Monad.
+Monad Parser where
+    p >>= f =
+        MkParser $ (\s => concatMap (\(a, s') => parse (f a) s') $ parse p s)
+
 --Parser to consume a single character.
 char : Char -> Parser Char
 char ch =
