@@ -35,12 +35,12 @@ Applicative Parser where
     pure a = MkParser (\s => Right (a, s))
     (MkParser cs1) <*> (MkParser cs2) =
         MkParser $ (\s =>
-            case cs2 s of
+            case cs1 s of
                 Left err => Left err
-                Right (a, s') =>
-                    case cs1 s' of
+                Right (f, s') =>
+                    case cs2 s' of
                         Left err => Left err
-                        Right (f, s'') => Right (f a, s''))
+                        Right (a, s'') => Right (f a, s''))
 
 --We can make the Parser a Monad.
 Monad Parser where
@@ -83,3 +83,8 @@ many v = MkParser (mv [])
             case parse v s of
                 Left err => Right (reverse xs, s)
                 Right (x, s') => mv (x :: xs) (assert_smaller s s')
+
+--Parse one or more.
+some : Parser a -> Parser (List a)
+some v =
+    pure (::) <*> v <*> many v

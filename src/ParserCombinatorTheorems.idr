@@ -81,3 +81,20 @@ manySpec :
     runParser (many (char 'x')) (unpack "xxxxxxxxxxxxxxxx")
         = Right (unpack "xxxxxxxxxxxxxxxx")
 manySpec = Refl
+
+--Some against an empty list produces an error.
+someEmptyStringSpec :
+    runParser (some (char 'x')) [] = Left UnexpectedEndOfInputError
+someEmptyStringSpec = Refl
+
+--A sequence is parsed in the right order.
+someSequenceOrderSpec :
+    runParser (some (char 'a' <|> char 'b' <|> char 'c')) (unpack "cba")
+        = Right (unpack "cba")
+someSequenceOrderSpec = Refl
+
+--An arbitrary long sequence is processed with some.
+someSpec :
+    runParser (some (char 'y')) (unpack "yyyyyyyyyyyyyyyy")
+        = Right (unpack "yyyyyyyyyyyyyyyy")
+someSpec = Refl
