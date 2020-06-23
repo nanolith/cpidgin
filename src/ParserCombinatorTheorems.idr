@@ -244,3 +244,25 @@ reservedSpacesEOFSpec :
     runParser (reserved "beach") (unpack "beach\n    ")
                             = Right "beach"
 reservedSpacesEOFSpec = Refl
+
+--Proof that digit consumes a digit.
+digitHappySpec : 
+    runParser ParserCombinator.digit ['7'] = Right '7'
+digitHappySpec = Refl
+
+--Proof that digit fails if the input is not a digit.
+digitNoMatchFailureSpec : 
+    runParser ParserCombinator.digit ['a']
+                            = Left UnsatisfiedPredicateError
+digitNoMatchFailureSpec = Refl
+
+--Proof that digit fails if the input is empty.
+digitEmptyFailureSpec : 
+    runParser ParserCombinator.digit [] = Left UnexpectedEndOfInputError
+digitEmptyFailureSpec = Refl
+
+--Proof that digit fails if it does not consume all input.
+digitNotEOFFailureSpec : 
+    runParser ParserCombinator.natural ['5', '.']
+                            = Left NotAllInputConsumedError
+digitNotEOFFailureSpec = Refl
