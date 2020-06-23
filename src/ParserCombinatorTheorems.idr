@@ -263,6 +263,6 @@ digitEmptyFailureSpec = Refl
 
 --Proof that digit fails if it does not consume all input.
 digitNotEOFFailureSpec : 
-    runParser ParserCombinator.natural ['5', '.']
+    runParser ParserCombinator.digit ['5', '.']
                             = Left NotAllInputConsumedError
 digitNotEOFFailureSpec = Refl
