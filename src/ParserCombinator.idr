@@ -166,3 +166,7 @@ token p =
 --parse a keyword.
 reserved : String -> Parser String
 reserved s = token $ string s
+
+--parse a value surrounded by parentheses.
+parens : Parser a -> Parser a
+parens p = char '(' *> p <* char ')'
