@@ -60,13 +60,13 @@ Alternative Parser where
                 Right res => Right res)
 
 --Parser to consume a single character.
-unit : Parser Char
-unit =
-        MkParser unitParser
+item : Parser Char
+item =
+        MkParser itemParser
     where
-        unitParser : (List Char -> Either ParserError (Pair Char (List Char)))
-        unitParser [] = Left UnexpectedEndOfInputError
-        unitParser (c :: cs) =
+        itemParser : (List Char -> Either ParserError (Pair Char (List Char)))
+        itemParser [] = Left UnexpectedEndOfInputError
+        itemParser (c :: cs) =
             Right (c, cs)
 
 --Parser to match a single character.
