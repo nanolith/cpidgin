@@ -266,3 +266,30 @@ digitNotEOFFailureSpec :
     runParser ParserCombinator.digit ['5', '.']
                             = Left NotAllInputConsumedError
 digitNotEOFFailureSpec = Refl
+
+--Proof that integer consumes a positive number.
+integerPositiveSpec : 
+    runParser ParserCombinator.integer (unpack "1482") = Right 1482
+integerPositiveSpec = Refl
+
+--Proof that integer consumes a negative number.
+integerNegativeSpec : 
+    runParser ParserCombinator.integer (unpack "-1482") = Right (0 - 1482)
+integerNegativeSpec = Refl
+
+--Proof that integer fails if the input is not a number.
+integerNoMatchFailureSpec : 
+    runParser ParserCombinator.integer ['a']
+                            = Left UnsatisfiedPredicateError
+integerNoMatchFailureSpec = Refl
+
+--Proof that integer fails if the input is empty.
+integerEmptyFailureSpec : 
+    runParser ParserCombinator.integer [] = Left UnexpectedEndOfInputError
+integerEmptyFailureSpec = Refl
+
+--Proof that integer fails if it does not consume all input.
+integerNotEOFFailureSpec : 
+    runParser ParserCombinator.integer ['5', '.']
+                            = Left NotAllInputConsumedError
+integerNotEOFFailureSpec = Refl

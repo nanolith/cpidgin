@@ -137,6 +137,13 @@ digit = satisfy isDigit
 natural : Parser Nat
 natural = (fromMaybe Z) <$> parsePositive <$> pack <$> some digit
 
+--parse an integer
+integer : Parser Integer
+integer =
+    (fromMaybe 0) <$> parseInteger <$> pack <$>
+        ((++) <$> ((flip (::) [] <$> char '-') <|> pure []) 
+              <*> some digit)
+
 --parse a string
 string : String -> Parser String
 string s =
