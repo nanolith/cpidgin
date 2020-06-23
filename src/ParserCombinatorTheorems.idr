@@ -177,3 +177,25 @@ naturalNotEOFFailureSpec :
     runParser ParserCombinator.natural ['5', '.']
                             = Left NotAllInputConsumedError
 naturalNotEOFFailureSpec = Refl
+
+--Proof that string consumes a string.
+stringHappySpec : 
+    runParser (string "combinator") (unpack "combinator") = Right "combinator"
+stringHappySpec = Refl
+
+--Proof that string fails if the input is not a matching string.
+stringNoMatchFailureSpec : 
+    runParser (string "combinator") ['a']
+                            = Left (GeneralError "Expecting c and got a")
+stringNoMatchFailureSpec = Refl
+
+--Proof that string fails if the input is empty.
+stringEmptyFailureSpec : 
+    runParser (string "combinator") [] = Left UnexpectedEndOfInputError
+stringEmptyFailureSpec = Refl
+
+--Proof that string fails if it does not consume all input.
+stringNotEOFFailureSpec : 
+    runParser (string "beach") (unpack "beaches")
+                            = Left NotAllInputConsumedError
+stringNotEOFFailureSpec = Refl

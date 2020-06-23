@@ -132,3 +132,12 @@ chainl p op x = (p `chainl1` op) <|> pure x
 --parse a natural number
 natural : Parser Nat
 natural = (fromMaybe Z) <$> parsePositive <$> pack <$> some (satisfy isDigit)
+
+--parse a string
+string : String -> Parser String
+string s =
+        pack <$> (parseString $ unpack s)
+    where
+        parseString : List Char -> Parser (List Char)
+        parseString [] = pure []
+        parseString (c :: cs) = (::) <$> char c <*> parseString cs
