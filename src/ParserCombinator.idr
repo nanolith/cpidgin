@@ -100,7 +100,7 @@ many v = MkParser (mv [])
 --Parse one or more.
 some : Parser a -> Parser (List a)
 some v =
-    pure (::) <*> v <*> many v
+    (::) <$> v <*> many v
 
 --Satisfy consumes and returns a character if it matches a given predicate.
 satisfy : (Char -> Bool) -> Parser Char
