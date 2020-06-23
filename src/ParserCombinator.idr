@@ -146,3 +146,12 @@ string s =
 spaces : Parser String
 spaces =
     pack <$> many (oneOf [' ', '\n', '\r', '\t'])
+
+--parse a token.
+token : Parser a -> Parser a
+token p =
+    p <* spaces
+
+--parse a keyword.
+reserved : String -> Parser String
+reserved s = token $ string s

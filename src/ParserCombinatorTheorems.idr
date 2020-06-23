@@ -216,3 +216,31 @@ spacesNotEOFFailureSpec :
     runParser ParserCombinator.spaces (unpack " abc")
                             = Left NotAllInputConsumedError
 spacesNotEOFFailureSpec = Refl
+
+--Proof that reserved consumes a string.
+reservedHappySpec : 
+    runParser (reserved "combinator") (unpack "combinator") = Right "combinator"
+reservedHappySpec = Refl
+
+--Proof that reserved fails if the input is not a matching keyword.
+reservedNoMatchFailureSpec : 
+    runParser (reserved "if") (unpack "while")
+                            = Left (GeneralError "Expecting i and got w")
+reservedNoMatchFailureSpec = Refl
+
+--Proof that reserved fails if the input is empty.
+reservedEmptyFailureSpec : 
+    runParser (reserved "combinator") [] = Left UnexpectedEndOfInputError
+reservedEmptyFailureSpec = Refl
+
+--Proof that reserved fails if it does not consume all input.
+reservedNotEOFFailureSpec : 
+    runParser (reserved "beach") (unpack "beaches")
+                            = Left NotAllInputConsumedError
+reservedNotEOFFailureSpec = Refl
+
+--Proof that reserved successfully clears whitespace at the end of input.
+reservedSpacesEOFSpec : 
+    runParser (reserved "beach") (unpack "beach\n    ")
+                            = Right "beach"
+reservedSpacesEOFSpec = Refl
