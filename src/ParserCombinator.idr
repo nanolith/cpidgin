@@ -141,3 +141,8 @@ string s =
         parseString : List Char -> Parser (List Char)
         parseString [] = pure []
         parseString (c :: cs) = (::) <$> char c <*> parseString cs
+
+--parse spaces
+spaces : Parser String
+spaces =
+    pack <$> many (oneOf [' ', '\n', '\r', '\t'])

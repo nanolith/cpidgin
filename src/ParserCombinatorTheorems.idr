@@ -199,3 +199,20 @@ stringNotEOFFailureSpec :
     runParser (string "beach") (unpack "beaches")
                             = Left NotAllInputConsumedError
 stringNotEOFFailureSpec = Refl
+
+--Proof that spaces consumes a string of spaces.
+spacesHappySpec : 
+    runParser ParserCombinator.spaces (unpack "\n\r\t ") = Right "\n\r\t "
+spacesHappySpec = Refl
+
+--Proof that spaces doesn't chew up non-spaces.
+spacesNoMatchSpec : 
+    runParser (ParserCombinator.spaces *> char 'a') ['a']
+                            = Right 'a'
+spacesNoMatchSpec = Refl
+
+--Proof that spaces fails if it does not consume all input.
+spacesNotEOFFailureSpec : 
+    runParser ParserCombinator.spaces (unpack " abc")
+                            = Left NotAllInputConsumedError
+spacesNotEOFFailureSpec = Refl
