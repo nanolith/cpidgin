@@ -60,6 +60,16 @@ Alternative Parser where
                 Right res => Right res)
 
 --Parser to consume a single character.
+unit : Parser Char
+unit =
+        MkParser unitParser
+    where
+        unitParser : (List Char -> Either ParserError (Pair Char (List Char)))
+        unitParser [] = Left UnexpectedEndOfInputError
+        unitParser (c :: cs) =
+            Right (c, cs)
+
+--Parser to match a single character.
 char : Char -> Parser Char
 char ch =
         MkParser charParser

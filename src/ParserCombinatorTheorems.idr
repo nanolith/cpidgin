@@ -5,7 +5,18 @@ import ParserCombinator
 
 %default total
 
---Proof that char consumes one input.
+--Proof that unit consumes one character.
+unitHappySpec : (ch : Char)
+             -> runParser ParserCombinator.unit [ch] = Right ch
+unitHappySpec ch = Refl
+
+--Proof that unit fails on empty input.
+unitEmptyFailureSpec : 
+                runParser ParserCombinator.unit []
+                    = Left UnexpectedEndOfInputError
+unitEmptyFailureSpec = Refl
+
+--Proof that char consumes one character.
 charHappySpec : (ch : Char) -> So (ch == ch)
                 -> runParser (char ch) [ch] = Right ch
 charHappySpec ch l with (ch == ch)
