@@ -130,6 +130,28 @@ satisfyNoMatchSpec = Refl
 
 --Satisfy works with some.
 satisfySomeSpec : 
-    runParser (many $ satisfy Prelude.Chars.isDigit) (unpack "0123456789")
+    runParser (some $ satisfy Prelude.Chars.isDigit) (unpack "0123456789")
         = Right $ unpack "0123456789"
 satisfySomeSpec = Refl
+
+--oneOf returns an UnexpectedEndOfInputError on empty.
+oneOfEOFSpec : 
+    runParser (oneOf ['a', 'b', 'c']) []
+        = Left UnexpectedEndOfInputError
+oneOfEOFSpec = Refl
+
+--oneOf consumes a matching character.
+oneOfMatchingCharSpec : 
+    runParser (oneOf ['a', 'b', 'c']) ['c'] = Right 'c'
+oneOfMatchingCharSpec = Refl
+
+--oneOf errors on a non-matching character.
+oneOfNoMatchSpec : 
+    runParser (oneOf ['a', 'b', 'c']) ['x'] = Left UnsatisfiedPredicateError
+oneOfNoMatchSpec = Refl
+
+--oneOf works with some.
+oneOfSomeSpec : 
+    runParser (some $ oneOf ['a', 'b', 'c']) (unpack "abcba")
+        = Right $ unpack "abcba"
+oneOfSomeSpec = Refl

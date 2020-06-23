@@ -107,3 +107,7 @@ satisfy p = do
     if p c
         then pure c
         else MkParser (\s => Left UnsatisfiedPredicateError)
+
+--Match against one of the characters in the list.
+oneOf : List Char -> Parser Char
+oneOf s = satisfy $ flip elem s
