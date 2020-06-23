@@ -3,43 +3,63 @@ module ParserCombinator
 %access public export
 %default total
 
+--Errors that the Parser can return.
+data ParserError =
+      UnexpectedEndOfInputError
+    | NotAllInputConsumedError
+    | GeneralError String
+
 --Simple parser record.
 record Parser (a : Type) where
     constructor MkParser
-    parse : (List Char -> List (Pair a (List Char)))
+    parse : (List Char -> Either ParserError (Pair a (List Char)))
 
 --Run a parser, returning either an error message or the type.
-runParser : Parser a -> List Char -> Either String a
+runParser : Parser a -> List Char -> Either ParserError a
 runParser (MkParser p) cs =
     case p cs of
-        [(res, [])] => Right res
-        [(res, rs)] => Left "Did not consume all input."
-        _ => Left "Parser error."
+        Right (res, []) => Right res
+        Right (res, rs) => Left NotAllInputConsumedError
+        Left err => Left err
 
 --We can make the Parser a Functor.
 Functor Parser where
-    map f (MkParser cs) = MkParser (\s => [(f a, b) | (a, b) <- cs s])
+    map f (MkParser cs) = MkParser (\s =>
+        case cs s of
+            Right (a, s') => Right (f a, s')
+            Left err => Left err)
 
 --We can make the Parser an Applicative.
 Applicative Parser where
-    pure a = MkParser (\s => [(a, s)])
+    pure a = MkParser (\s => Right (a, s))
     (MkParser cs1) <*> (MkParser cs2) =
-        MkParser (\s =>
-            [(f a, s2) | (f, s1) <- cs1 s, (a, s2) <- cs2 s1])
+        MkParser $ (\s =>
+            case cs2 s of
+                Left err => Left err
+                Right (a, s') =>
+                    case cs1 s' of
+                        Left err => Left err
+                        Right (f, s'') => Right (f a, s''))
 
 --We can make the Parser a Monad.
 Monad Parser where
-    p >>= f =
-        MkParser $ (\s => concatMap (\(a, s') => parse (f a) s') $ parse p s)
+    (MkParser cs) >>= f =
+        MkParser (\s =>
+            case cs s of
+                Left err => Left err
+                Right (a, s') =>
+                    parse (f a) s')
 
 --Parser to consume a single character.
 char : Char -> Parser Char
 char ch =
         MkParser charParser
     where
-        charParser : (List Char -> List (Pair Char (List Char)))
-        charParser [] = []
+        charParser : (List Char -> Either ParserError (Pair Char (List Char)))
+        charParser [] = Left UnexpectedEndOfInputError
         charParser (c :: cs) =
             if c == ch
-                then [(c, cs)]
-                else []
+                then Right (c, cs)
+                else Left (GeneralError
+                    ("Expecting " ++ singleton ch ++ " and got "
+                        ++ singleton c))

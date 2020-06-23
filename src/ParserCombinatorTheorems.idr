@@ -14,20 +14,23 @@ charHappySpec ch l with (ch == ch)
 
 --Proof that char fails if the two inputs don't match.
 charNoMatchFailureSpec : (ch, notch : Char) -> So (notch /= ch)
-                        -> runParser (char ch) [notch] = Left "Parser error."
+                        -> runParser (char ch) [notch]
+                            = Left (GeneralError
+                                ("Expecting " ++ singleton ch ++ " and got "
+                                    ++ singleton notch))
 charNoMatchFailureSpec ch notch l with (notch == ch)
     | True = absurd l
     | False = Refl
 
 --Proof that char fails if the input is empty.
 charEmptyFailureSpec : (ch : Char)
-                     -> runParser (char ch) [] = Left "Parser error."
+                     -> runParser (char ch) [] = Left UnexpectedEndOfInputError
 charEmptyFailureSpec ch = Refl
 
 --Proof that char fails if it does not consume all input.
 charNotEOFFailureSpec : (ch,notch : Char) -> So (ch == ch)
                      -> runParser (char ch) [ch,notch]
-                            = Left "Did not consume all input."
+                            = Left NotAllInputConsumedError
 charNotEOFFailureSpec ch notch l with (ch == ch)
     | True = Refl
     | False = absurd l
