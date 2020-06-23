@@ -129,9 +129,13 @@ chainl1 p op =
 chainl : Parser a -> Parser (a -> a -> a) -> a -> Parser a
 chainl p op x = (p `chainl1` op) <|> pure x
 
+--parse a digit
+digit : Parser Char
+digit = satisfy isDigit
+
 --parse a natural number
 natural : Parser Nat
-natural = (fromMaybe Z) <$> parsePositive <$> pack <$> some (satisfy isDigit)
+natural = (fromMaybe Z) <$> parsePositive <$> pack <$> some digit
 
 --parse a string
 string : String -> Parser String
