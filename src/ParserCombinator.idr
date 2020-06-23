@@ -7,6 +7,7 @@ module ParserCombinator
 data ParserError =
       UnexpectedEndOfInputError
     | NotAllInputConsumedError
+    | NoAlternativesError
     | GeneralError String
 
 --Simple parser record.
@@ -50,6 +51,14 @@ Monad Parser where
                 Right (a, s') =>
                     parse (f a) s')
 
+Alternative Parser where
+    empty = MkParser (\s => Left NoAlternativesError)
+    p <|> q =
+        MkParser (\s =>
+            case parse p s of
+                Left err => parse q s
+                Right res => Right res)
+
 --Parser to consume a single character.
 char : Char -> Parser Char
 char ch =
@@ -63,3 +72,14 @@ char ch =
                 else Left (GeneralError
                     ("Expecting " ++ singleton ch ++ " and got "
                         ++ singleton c))
+
+--Parse zero or more.
+many : Parser a -> Parser (List a)
+many v = MkParser (mv [])
+    where
+        mv : List a -> List Char
+            -> Either ParserError (Pair (List a) (List Char))
+        mv xs s =
+            case parse v s of
+                Left err => Right (reverse xs, s)
+                Right (x, s') => mv (x :: xs) (assert_smaller s s')

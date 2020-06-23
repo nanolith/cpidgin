@@ -54,3 +54,30 @@ singleStringHelperMonad = do
 singleStringParseMonadSpec :
     runParser ParserCombinatorTheorems.singleStringHelperMonad ['x'] = Right "x"
 singleStringParseMonadSpec = Refl
+
+--Proof that parsing a value with two alternatives passes.
+alternativeParseLHSSpec : 
+    runParser (char 'x' <|> char 'y') ['x'] = Right 'x'
+alternativeParseLHSSpec = Refl
+
+--Proof that parsing a value with two alternatives passes.
+alternativeParseRHSSpec : 
+    runParser (char 'x' <|> char 'y') ['y'] = Right 'y'
+alternativeParseRHSSpec = Refl
+
+--Many against an empty list produces an empty list.
+manyEmptyStringSpec :
+    runParser (many (char 'x')) [] = Right []
+manyEmptyStringSpec = Refl
+
+--A sequence is parsed in the right order.
+manySequenceOrderSpec :
+    runParser (many (char 'a' <|> char 'b' <|> char 'c')) (unpack "abc")
+        = Right (unpack "abc")
+manySequenceOrderSpec = Refl
+
+--An arbitrary long sequence is processed with many.
+manySpec :
+    runParser (many (char 'x')) (unpack "xxxxxxxxxxxxxxxx")
+        = Right (unpack "xxxxxxxxxxxxxxxx")
+manySpec = Refl
