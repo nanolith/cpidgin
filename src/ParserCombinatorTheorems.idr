@@ -155,3 +155,25 @@ oneOfSomeSpec :
     runParser (some $ oneOf ['a', 'b', 'c']) (unpack "abcba")
         = Right $ unpack "abcba"
 oneOfSomeSpec = Refl
+
+--Proof that natural consumes a number.
+naturalHappySpec : 
+    runParser ParserCombinator.natural (unpack "77") = Right 77
+naturalHappySpec = Refl
+
+--Proof that natural fails if the input is not a number.
+naturalNoMatchFailureSpec : 
+    runParser ParserCombinator.natural ['a']
+                            = Left UnsatisfiedPredicateError
+naturalNoMatchFailureSpec = Refl
+
+--Proof that natural fails if the input is empty.
+naturalEmptyFailureSpec : 
+    runParser ParserCombinator.natural [] = Left UnexpectedEndOfInputError
+naturalEmptyFailureSpec = Refl
+
+--Proof that natural fails if it does not consume all input.
+naturalNotEOFFailureSpec : 
+    runParser ParserCombinator.natural ['5', '.']
+                            = Left NotAllInputConsumedError
+naturalNotEOFFailureSpec = Refl

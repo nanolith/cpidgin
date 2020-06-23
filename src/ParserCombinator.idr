@@ -1,5 +1,7 @@
 module ParserCombinator
 
+import Data.String
+
 %access public export
 %default total
 
@@ -126,3 +128,7 @@ chainl1 p op =
 --chainl matches zero ormore occurrences of a value interspersed with an op.
 chainl : Parser a -> Parser (a -> a -> a) -> a -> Parser a
 chainl p op x = (p `chainl1` op) <|> pure x
+
+--parse a natural number
+natural : Parser Nat
+natural = (fromMaybe Z) <$> parsePositive <$> pack <$> some (satisfy isDigit)
