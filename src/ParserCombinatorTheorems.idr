@@ -109,3 +109,27 @@ someSpec :
     runParser (some (char 'y')) (unpack "yyyyyyyyyyyyyyyy")
         = Right (unpack "yyyyyyyyyyyyyyyy")
 someSpec = Refl
+
+--Satisfy returns an UnexpectedEndOfInputError on empty.
+satisfyEOFSpec : 
+    runParser (satisfy Prelude.Chars.isDigit) []
+        = Left UnexpectedEndOfInputError
+satisfyEOFSpec = Refl
+
+--Satisfy consumes a matching character.
+satisfyNumSpec : 
+    runParser (satisfy Prelude.Chars.isDigit) ['9']
+        = Right '9'
+satisfyNumSpec = Refl
+
+--Satisfy errors on a non-matching character.
+satisfyNoMatchSpec : 
+    runParser (satisfy Prelude.Chars.isDigit) ['A']
+        = Left UnsatisfiedPredicateError
+satisfyNoMatchSpec = Refl
+
+--Satisfy works with some.
+satisfySomeSpec : 
+    runParser (many $ satisfy Prelude.Chars.isDigit) (unpack "0123456789")
+        = Right $ unpack "0123456789"
+satisfySomeSpec = Refl

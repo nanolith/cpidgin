@@ -8,6 +8,7 @@ data ParserError =
       UnexpectedEndOfInputError
     | NotAllInputConsumedError
     | NoAlternativesError
+    | UnsatisfiedPredicateError
     | GeneralError String
 
 --Simple parser record.
@@ -98,3 +99,11 @@ many v = MkParser (mv [])
 some : Parser a -> Parser (List a)
 some v =
     pure (::) <*> v <*> many v
+
+--Satisfy consumes and returns a character if it matches a given predicate.
+satisfy : (Char -> Bool) -> Parser Char
+satisfy p = do
+    c <- item
+    if p c
+        then pure c
+        else MkParser (\s => Left UnsatisfiedPredicateError)
