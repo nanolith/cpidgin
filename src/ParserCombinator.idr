@@ -120,10 +120,12 @@ chainl1 p op =
         p >>= rest
     where
         rest : a -> Parser a
-        rest x = do
-            f <- op
-            y <- p
-            assert_total $ rest (f x y) <|> pure x
+        rest x =
+            assert_total
+                ((do
+                    f <- op
+                    y <- p
+                    rest (f x y)) <|> pure x)
 
 --chainl matches zero ormore occurrences of a value interspersed with an op.
 chainl : Parser a -> Parser (a -> a -> a) -> a -> Parser a
