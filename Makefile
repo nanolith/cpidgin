@@ -1,4 +1,4 @@
-SOURCES = $(wildcard src/*.idr)
+SOURCES = $(wildcard src/idris/*.idr)
 OBJECTS = $(patsubst %.idr,%.ibc,$(SOURCES))
 
 .PHONY: ALL clean
@@ -6,7 +6,7 @@ OBJECTS = $(patsubst %.idr,%.ibc,$(SOURCES))
 ALL: $(OBJECTS)
 
 %.ibc : %.idr $(SOURCES)
-	idris -i src -c --check $<
+	idris -i src/idris -c --check $<
 
 clean:
 	rm -f $(OBJECTS)
