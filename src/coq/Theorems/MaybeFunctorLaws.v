@@ -1,6 +1,7 @@
 Require Import CPidgin.Control.Functor.
 Require Import CPidgin.Data.Maybe.
 
+(* Helper function to act as an id function. *)
 Definition fid {A : Type} (x : A): A :=
     x.
 
