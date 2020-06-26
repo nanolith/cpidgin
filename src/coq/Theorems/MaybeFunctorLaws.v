@@ -17,7 +17,7 @@ Proof.
     induction x.
     trivial.
     trivial.
-Abort.
+Qed.
 
 (* Functor Law 2: Composition. *)
 Lemma Functor_Maybe_Law2:
