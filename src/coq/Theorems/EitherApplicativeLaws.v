@@ -2,26 +2,26 @@ Require Import CPidgin.Control.Applicative.
 Require Import CPidgin.Data.Either.
 
 (* Helper function to act as an id function. *)
-Definition fid {A : Type} (x : A) : A :=
+Definition id' {A : Type} (x : A) : A :=
     x.
 
 (* Applicative Law 1: Identity. *)
-Lemma Applicative_Either_Law1:
+Lemma EitherApplicativePreservesIdentityMorphisms:
     forall (E A : Type) (x : Either E A),
-        pure fid <*> x = x.
+        pure id' <*> x = x.
 Proof.
     intros.
-    unfold fid.
+    unfold id'.
     unfold pure.
     unfold app.
     unfold eitherApplicative.
-    induction x.
+    destruct x.
     trivial.
     trivial.
 Qed.
 
 (* Applicative Law 2: Homomorphism. *)
-Lemma Applicative_Either_Law2:
+Lemma EitherApplicativeHomomorphismLaw:
     forall (E A B : Type) (x : A) (f : A -> B),
         pure f <*> pure x = (pure (f x) : Either E B).
 Proof.
@@ -33,7 +33,7 @@ Proof.
 Qed.
 
 (* Applicative Law 3: Interchange. *)
-Lemma Applicative_Either_Law3:
+Lemma EitherApplicativeInterchangeLaw:
     forall (E A B : Type) (x : A) (f : Either E (A -> B)),
         f <*> pure x
             = pure (fun g => g x) <*> f.
@@ -42,11 +42,13 @@ Proof.
     unfold pure.
     unfold app.
     unfold eitherApplicative.
+    destruct f.
+    trivial.
     trivial.
 Qed.
 
 (* Applicative Law 4: Composition. *)
-Lemma Applicative_Either_Law4:
+Lemma EitherApplicativeCompositionLaw:
     forall (E A B C : Type) (w : Either E A) (v : Either E (A -> B))
            (u : Either E (B -> C)),
         pure (fun f g x => f (g x)) <*> u <*> v <*> w
@@ -56,19 +58,21 @@ Proof.
     unfold pure.
     unfold app.
     unfold eitherApplicative.
-    induction w.
-    induction v.
-    induction u.
+    destruct u.
+    destruct v.
+    destruct w.
+    4: {
+        destruct v.
+        destruct w.
+        3: {
+            destruct w.
+            trivial.
+            trivial.
+        }
+        trivial.
+        trivial.
+    }
     trivial.
-    trivial.
-    induction u.
-    trivial.
-    trivial.
-    induction v.
-    induction u.
-    trivial.
-    trivial.
-    induction u.
     trivial.
     trivial.
 Qed.
