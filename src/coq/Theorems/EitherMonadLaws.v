@@ -2,33 +2,33 @@ Require Import CPidgin.Control.Monad.
 Require Import CPidgin.Data.Either.
 
 (* Monad Law 1: Left Identity. *)
-Lemma Monad_Either_Law1:
+Lemma EitherMonadLeftIdentity:
     forall (E A B : Type) (x : A) (f : A -> Either E B),
         mret x >>= f = f x.
 Proof.
     intros.
     unfold mret.
-    unfold eitherMonad.
     unfold bind.
+    unfold eitherMonad.
     trivial.
 Qed.
 
 (* Monad Law 2: Right Identity. *)
-Lemma Monad_Either_Law2:
+Lemma EitherMonadRightIdentity:
     forall (E A : Type) (m : Either E A),
         m >>= mret = m.
 Proof.
     intros.
     unfold mret.
-    unfold eitherMonad.
     unfold bind.
-    induction m.
+    unfold eitherMonad.
+    destruct m.
     trivial.
     trivial.
 Qed.
 
 (* Monad Law 3: Associativity. *)
-Lemma Monad_Either_Law3:
+Lemma EitherMonadAssociativity:
     forall (E A B C : Type) (m : Either E A) (f : A -> Either E B)
            (g : B -> Either E C),
         (m >>= f) >>= g
@@ -37,7 +37,7 @@ Proof.
     intros.
     unfold bind.
     unfold eitherMonad.
-    induction m.
+    destruct m.
     trivial.
     trivial.
 Qed.
