@@ -2,35 +2,35 @@ Require Import CPidgin.Control.Monad.
 Require Import CPidgin.Data.Maybe.
 
 (* Monad Law 1: Left Identity. *)
-Lemma Monad_Maybe_Law1:
+Lemma MaybeMonadLeftIdentity:
     forall (A B : Type) (x : A) (f : A -> Maybe B),
         mret x >>= f
             = f x.
 Proof.
     intros.
     unfold mret.
-    unfold maybeMonad.
     unfold bind.
+    unfold maybeMonad.
     trivial.
 Qed.
 
 (* Monad Law 2: Right Identity. *)
-Lemma Monad_Maybe_Law2:
+Lemma MaybeMonadRightIdentity:
     forall (A : Type) (m : Maybe A),
         m >>= mret
             = m.
 Proof.
     intros.
     unfold mret.
-    unfold maybeMonad.
     unfold bind.
-    induction m.
+    unfold maybeMonad.
+    destruct m.
     trivial.
     trivial.
 Qed.
 
 (* Monad Law 3: Associativity. *)
-Lemma Monad_Maybe_Law3:
+Lemma MaybeMonadAssociativity:
     forall (A B C : Type) (m : Maybe A) (f : A -> Maybe B) (g : B -> Maybe C),
         (m >>= f) >>= g =
             m >>= (fun x => (f x >>= g)).
@@ -38,7 +38,7 @@ Proof.
     intros.
     unfold bind.
     unfold maybeMonad.
-    induction m.
+    destruct m.
     trivial.
     trivial.
 Qed.
