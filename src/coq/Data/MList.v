@@ -49,3 +49,10 @@ Fixpoint append {A : Type} (l1 l2 : MList A) : MList A :=
 
 (* Use xs ++ ys to append these two lists. *)
 Notation "xs ++ ys" := (append xs ys).
+
+(* Get the length of an MList. *)
+Fixpoint length {A : Type} (l : MList A) : nat :=
+    match l with
+        | [] => 0
+        | (x :: xs) => S (length xs)
+    end.

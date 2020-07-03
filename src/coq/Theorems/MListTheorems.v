@@ -87,3 +87,52 @@ Proof.
         trivial.
     }
 Qed.
+
+(* Proof that we can unroll length by one. *)
+Lemma list_length_unroll:
+    forall (A : Type) (l : MList A) (m : Maybe A),
+        length (m :: l) = S (length l).
+Proof.
+    intros.
+    unfold length.
+    trivial.
+Qed.
+
+(* Proof that append and cons are commutative. *)
+Lemma list_append_cons_commute:
+    forall (A : Type) (l1 l2 : MList A) (m : Maybe A),
+        (m :: l1) ++ l2 = m :: (l1 ++ l2).
+Proof.
+    intros.
+    unfold append.
+    trivial.
+Qed.
+
+(* Proof that succ is associative wrt addition. *)
+Lemma nat_succ_plus_assoc:
+    forall (n1 n2 : nat),
+        S (n1 + n2) = S n1 + n2.
+Proof.
+    intros.
+    unfold plus.
+    trivial.
+Qed.
+
+(* Proof that the length of two lists appended is the same as their lengths
+   added. *)
+Lemma list_length_append:
+    forall (A : Type) (l1 l2 : MList A),
+        length (l1 ++ l2) = (length l1) + (length l2).
+Proof.
+    intros.
+    induction l1.
+    unfold append.
+    unfold length.
+    trivial.
+    rewrite list_append_cons_commute.
+    rewrite list_length_unroll.
+    rewrite list_length_unroll.
+    rewrite IHl1.
+    rewrite nat_succ_plus_assoc.
+    trivial.
+Qed.
