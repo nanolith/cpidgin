@@ -137,17 +137,6 @@ Proof.
     trivial.
 Qed.
 
-(* Proof that we can unroll drop. *)
-Lemma list_drop_unroll:
-    forall (A : Type) (l : MList A) (m : Maybe A) (n : nat),
-        drop (S n) (m :: l) = drop n l.
-Proof.
-    intros.
-    unfold drop.
-    unfold tail.
-    trivial.
-Qed.
-
 (* Proof that dropping the length of a list results in an empty list. *)
 Lemma list_drop_length_empty:
     forall (A : Type) (l : MList A),
