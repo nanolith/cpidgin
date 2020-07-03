@@ -67,3 +67,10 @@ Fixpoint take {A : Type} (n : nat) (l : MList A) : MList A :=
                 | (x :: xs) => x :: take n' xs
             end
     end.
+
+(* Take the nth item from an MList. *)
+Definition nth {A : Type} (n : nat) (l : MList A) : Maybe A :=
+    match n with
+        | 0 => head l
+        | S n' => head (drop n l)
+    end.

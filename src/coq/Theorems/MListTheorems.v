@@ -155,7 +155,7 @@ Qed.
 
 (* Proof that we can append two lists, drop the first list, and get the second
    list. *)
-Lemma lst_drop_append_length:
+Lemma list_drop_append_length:
     forall (A : Type) (l1 l2 : MList A),
         drop (length l1) (l1 ++ l2) = l2.
 Proof.
@@ -213,5 +213,25 @@ Proof.
     rewrite list_length_unroll.
     rewrite list_take_unroll.
     rewrite IHl1.
+    trivial.
+Qed.
+
+(* Proof that we can take the nth item from an arbitrary list. *)
+Definition list_nth_append_concat:
+    forall (A : Type) (l1 l2 : MList A) (m : Maybe A),
+        nth (length l1) (l1 ++ (m :: l2)) = m.
+Proof.
+    intros.
+    unfold nth.
+    destruct l1.
+    unfold length.
+    unfold append.
+    unfold head.
+    trivial.
+    rewrite list_length_unroll.
+    rewrite list_append_cons_commute.
+    rewrite list_drop_unroll.
+    rewrite list_drop_append_length.
+    unfold head.
     trivial.
 Qed.
