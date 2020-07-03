@@ -56,3 +56,14 @@ Fixpoint length {A : Type} (l : MList A) : nat :=
         | [] => 0
         | (x :: xs) => S (length xs)
     end.
+
+(* Take the first n elements in an MList. *)
+Fixpoint take {A : Type} (n : nat) (l : MList A) : MList A :=
+    match n with
+        | 0 => []
+        | S n' =>
+            match l with
+                | [] => []
+                | (x :: xs) => x :: take n' xs
+            end
+    end.

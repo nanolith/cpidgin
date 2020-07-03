@@ -182,3 +182,47 @@ Proof.
     rewrite IHl1.
     trivial.
 Qed.
+
+(* Proof that we can unroll take. *)
+Lemma list_take_unroll:
+    forall (A : Type) (l : MList A) (m : Maybe A) (n : nat),
+        take (S n) (m :: l) = m :: take n l.
+Proof.
+    intros.
+    unfold take.
+    trivial.
+Qed.
+
+(* Proof that taking the length from a list is that list. *)
+Lemma list_take_length:
+    forall (A : Type) (l : MList A),
+        take (length l) l = l.
+Proof.
+    intros.
+    induction l.
+    unfold length.
+    unfold take.
+    trivial.
+    rewrite list_length_unroll.
+    rewrite list_take_unroll.
+    rewrite IHl.
+    trivial.
+Qed.
+
+(* Proof that we can take the first list from apending two lists. *)
+Lemma list_append_take:
+    forall (A : Type) (l1 l2 : MList A),
+        take (length l1) (l1 ++ l2) = l1.
+Proof.
+    intros.
+    induction l1.
+    unfold length.
+    unfold append.
+    unfold take.
+    trivial.
+    rewrite list_append_cons_commute.
+    rewrite list_length_unroll.
+    rewrite list_take_unroll.
+    rewrite IHl1.
+    trivial.
+Qed.
