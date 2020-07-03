@@ -136,3 +136,49 @@ Proof.
     rewrite nat_succ_plus_assoc.
     trivial.
 Qed.
+
+(* Proof that we can unroll drop. *)
+Lemma list_drop_unroll:
+    forall (A : Type) (l : MList A) (m : Maybe A) (n : nat),
+        drop (S n) (m :: l) = drop n l.
+Proof.
+    intros.
+    unfold drop.
+    unfold tail.
+    trivial.
+Qed.
+
+(* Proof that dropping the length of a list results in an empty list. *)
+Lemma list_drop_length_empty:
+    forall (A : Type) (l : MList A),
+        drop (length l) l = [].
+Proof.
+    intros.
+    induction l.
+    unfold length.
+    unfold drop.
+    trivial.
+    rewrite list_length_unroll.
+    rewrite list_drop_unroll.
+    rewrite IHl.
+    trivial.
+Qed.
+
+(* Proof that we can append two lists, drop the first list, and get the second
+   list. *)
+Lemma lst_drop_append_length:
+    forall (A : Type) (l1 l2 : MList A),
+        drop (length l1) (l1 ++ l2) = l2.
+Proof.
+    intros.
+    induction l1.
+    unfold length.
+    unfold drop.
+    unfold append.
+    trivial.
+    rewrite list_length_unroll.
+    rewrite list_append_cons_commute.
+    rewrite list_drop_unroll.
+    rewrite IHl1.
+    trivial.
+Qed.
