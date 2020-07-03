@@ -1,4 +1,4 @@
-Require Import CPidgin.Data.List.
+Require Import CPidgin.Data.MList.
 Require Import CPidgin.Data.Maybe.
 
 (* head of [] returns Nothing. *)
