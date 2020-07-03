@@ -4,7 +4,7 @@ Require Import CPidgin.Data.Maybe.
 (* head of [] returns Nothing. *)
 Lemma list_head_nil_none:
     forall (A : Type),
-        head ([] : List A) = Nothing.
+        head ([] : MList A) = Nothing.
 Proof.
     intros.
     unfold head.
@@ -13,7 +13,7 @@ Qed.
 
 (* head of x :: xs returns x. *)
 Lemma list_head_cons:
-    forall (A : Type) (x : Maybe A) (xs : List A),
+    forall (A : Type) (x : Maybe A) (xs : MList A),
         head (x :: xs) = x.
 Proof.
     intros.
@@ -24,7 +24,7 @@ Qed.
 (* tail of [] is []. *)
 Lemma list_tail_nil:
     forall (A : Type),
-        tail ([] : List A) = [].
+        tail ([] : MList A) = [].
 Proof.
     intros.
     unfold tail.
@@ -33,7 +33,7 @@ Qed.
 
 (* tail of x :: xs is xs. *)
 Lemma list_tail_cons:
-    forall (A : Type) (x : Maybe A) (xs : List A),
+    forall (A : Type) (x : Maybe A) (xs : MList A),
         tail (x :: xs) = xs.
 Proof.
     intros.
@@ -42,7 +42,7 @@ Proof.
 Qed.
 
 (* helper to create a duplicate list of a given size. *)
-Fixpoint dupList {A : Type} (n : nat) (m : Maybe A) (ls : List A) : List A :=
+Fixpoint dupList {A : Type} (n : nat) (m : Maybe A) (ls : MList A) : MList A :=
     match n with
         | 0 => ls
         | S n' => m :: dupList n' m ls
@@ -50,7 +50,7 @@ Fixpoint dupList {A : Type} (n : nat) (m : Maybe A) (ls : List A) : List A :=
 
 (* proof that we can unroll drop by 1. *)
 Lemma list_drop_unroll:
-    forall (A : Type) (n : nat) (x : Maybe A) (xs : List A),
+    forall (A : Type) (n : nat) (x : Maybe A) (xs : MList A),
         drop (S n) (x :: xs) = drop n xs.
 Proof.
     intros.
@@ -60,7 +60,7 @@ Qed.
 
 (* proof that we can unroll dupList by 1. *)
 Lemma list_dupList_unroll:
-    forall (A : Type) (n : nat) (x : Maybe A) (xs : List A),
+    forall (A : Type) (n : nat) (x : Maybe A) (xs : MList A),
         dupList (S n) x xs = x :: dupList n x xs.
 Proof.
     intros.
@@ -70,7 +70,7 @@ Qed.
 
 (* proof that drop n drops n values from a list. *)
 Lemma list_drop:
-    forall (A : Type) (n : nat) (x : Maybe A) (xs : List A),
+    forall (A : Type) (n : nat) (x : Maybe A) (xs : MList A),
         drop n (dupList n x xs) = xs.
 Proof.
     intros.
