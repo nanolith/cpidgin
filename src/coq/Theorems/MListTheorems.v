@@ -216,6 +216,20 @@ Proof.
     trivial.
 Qed.
 
+(* Proof that we can unroll nth. *)
+Definition list_nth_unroll:
+    forall (A : Type) (n : nat) (l : MList A) (m : Maybe A),
+        nth (S n) (m :: l) = nth n l.
+Proof.
+    intros.
+    unfold nth.
+    rewrite list_drop_unroll.
+    destruct n.
+    unfold drop.
+    trivial.
+    trivial.
+Qed.
+
 (* Proof that we can take the nth item from an arbitrary list. *)
 Definition list_nth_append_concat:
     forall (A : Type) (l1 l2 : MList A) (m : Maybe A),
