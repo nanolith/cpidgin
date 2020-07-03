@@ -39,3 +39,13 @@ Fixpoint drop {A : Type} (n : nat) (lst : List A) : List A :=
         | 0 => lst
         | S n' => drop n' (tail lst)
     end.
+
+(* Append two Lists. *)
+Fixpoint append {A : Type} (l1 l2 : List A) : List A :=
+    match l1 with
+        | [] => l2
+        | (x :: xs) => x :: append xs l2
+    end.
+
+(* Use xs ++ ys to append these two lists. *)
+Notation "xs ++ ys" := (append xs ys).
