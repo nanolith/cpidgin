@@ -1,5 +1,7 @@
 Require Import CPidgin.Data.MList.
 Require Import CPidgin.Data.Maybe.
+Require Import Coq.Arith.Compare_dec.
+Require Import PeanoNat.
 
 (* head of [] returns Nothing. *)
 Lemma list_head_nil_none:
@@ -247,5 +249,75 @@ Proof.
     rewrite list_drop_unroll.
     rewrite list_drop_append_length.
     unfold head.
+    trivial.
+Qed.
+
+(* Proof that we can unroll removeNth by one. *)
+Lemma list_remove_nth_unroll:
+    forall (A : Type) (n : nat) (l : MList A) (m : Maybe A),
+        removeNth (S n) (m :: l) = m :: removeNth n l.
+Proof.
+    intros.
+    unfold removeNth.
+    trivial.
+Qed.
+
+(* Proof that we can remove an element from a list. *)
+Lemma list_remove_nth:
+    forall (A : Type) (l1 l2 : MList A) (m : Maybe A),
+        removeNth (length l1) (l1 ++ (m :: l2)) = l1 ++ l2.
+Proof.
+    intros.
+    induction l1.
+    unfold length.
+    unfold removeNth.
+    unfold tail.
+    unfold append.
+    trivial.
+    rewrite list_length_unroll.
+    rewrite list_append_cons_commute.
+    rewrite list_append_cons_commute.
+    rewrite list_remove_nth_unroll.
+    rewrite IHl1.
+    trivial.
+Qed.
+
+(* Proof that removing the nth element from an empty list returns the empty
+   list. *)
+Lemma list_remove_nth_empty:
+    forall (A : Type) (n : nat),
+        removeNth n ([] : MList A) = [].
+Proof.
+    intros.
+    unfold removeNth.
+    destruct n.
+    unfold tail.
+    trivial.
+    trivial.
+Qed.
+
+(* Proof that a list can be destructed as a left append of an empty list and
+   itself. *)
+Lemma list_empty_left_append:
+    forall (A : Type) (l : MList A),
+        l = [] ++ l.
+Proof.
+    intros.
+    unfold append.
+    trivial.
+Qed.
+
+(* Proof that a list can be destructed as a right append of an empty list and
+   itself. *)
+Lemma list_empty_right_append:
+    forall (A : Type) (l : MList A),
+        l = l ++ [].
+Proof.
+    intros.
+    induction l.
+    unfold append.
+    trivial.
+    rewrite list_append_cons_commute.
+    rewrite <- IHl.
     trivial.
 Qed.

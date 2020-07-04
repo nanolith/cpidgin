@@ -74,3 +74,14 @@ Definition nth {A : Type} (n : nat) (l : MList A) : Maybe A :=
         | 0 => head l
         | S n' => head (drop n l)
     end.
+
+(* Remove the nth item from an MList. *)
+Fixpoint removeNth {A : Type} (n : nat) (l : MList A) : MList A :=
+    match n with
+        | 0 => tail l
+        | S n' =>
+        match l with
+            | [] => []
+            | (x :: xs) => x :: removeNth n' xs
+        end
+    end.
