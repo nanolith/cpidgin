@@ -2,6 +2,7 @@ IDRIS_SOURCES = $(wildcard src/idris/*.idr)
 IDRIS_OBJECTS = $(patsubst %.idr,%.ibc,$(IDRIS_SOURCES))
 COQ_SOURCES = $(wildcard src/coq/Control/*.v)
 COQ_SOURCES += $(wildcard src/coq/Data/*.v)
+COQ_SOURCES += $(wildcard src/coq/App/*.v)
 COQ_SOURCES += $(wildcard src/coq/Theorems/*.v)
 COQ_SOURCES += $(wildcard src/coq/*.v)
 COQ_OBJECTS = $(patsubst %.v,%.vo,$(COQ_SOURCES))
@@ -22,3 +23,6 @@ clean:
 
 #MList depends on Maybe
 src/coq/Data/MList.vo : src/coq/Data/Maybe.vo
+
+#Machine depends on Instruction
+src/coq/App/Machine.vo : src/coq/App/Instruction.vo
