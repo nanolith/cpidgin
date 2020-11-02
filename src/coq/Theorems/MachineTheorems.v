@@ -46,7 +46,6 @@ Lemma eval_push:
     forall (s : Stack) (r : B64) (t : Time),
         eval PUSH (Mach s (Reg r) t)
             = Right (timeDelay (Mach (r :: s) (Reg r) t) PUSH_DELAY).
-
 Proof.
     intros.
     unfold eval.
