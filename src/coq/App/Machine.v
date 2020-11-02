@@ -73,11 +73,19 @@ Definition evalIMM (mach : Machine) (v : B64) : MResult :=
         | Mach s r t => mret (timeDelay (Mach s (Reg v) t) IMM_DELAY)
     end.
 
+(* Evaluate a PUSH instruction with the given machine state. *)
+Definition evalPUSH (mach : Machine) : MResult :=
+    match mach with
+        | Mach s (Reg r) t =>
+            mret (timeDelay (Mach (r :: s) (Reg r) t) PUSH_DELAY)
+    end.
+
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
             | NOP => evalNOP mach
             | IMM val => evalIMM mach val
+            | PUSH => evalPUSH mach
         end.
 
 End Machine.
