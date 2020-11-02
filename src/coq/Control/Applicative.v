@@ -1,3 +1,5 @@
+Module Applicative.
+
 (* The Applicative typeclass provides a means to lift both values and         *)
 (* functions to an applicative functor space.                                 *)
 Class Applicative (A: Type -> Type) : Type := {
@@ -7,3 +9,5 @@ Class Applicative (A: Type -> Type) : Type := {
 
 (* The <*> operator maps to app. *)
 Infix "<*>" := app (at level 65, left associativity).
+
+End Applicative.

@@ -2,6 +2,8 @@ Require Import Coq.Bool.Bvector.
 Require Import Coq.ZArith.BinInt.
 Require Import Coq.ZArith.Zdigits.
 
+Module Bits.
+
 (* An 8-bit binary number. *)
 Definition B8 := Bvector 8.
 
@@ -19,3 +21,5 @@ Definition B8_to_Z (bv : B8) : Z := binary_value 8 bv.
 
 (* Map a 64-bit number to an integer. *)
 Definition B64_to_Z (bv : B64) : Z := binary_value 64 bv.
+
+End Bits.

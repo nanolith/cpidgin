@@ -1,6 +1,11 @@
 Require Import CPidgin.Control.Monad.
 Require Import CPidgin.Data.Either.
 
+Module EitherMonadLaws.
+
+Import Either.Either.
+Import Monad.
+
 (* Monad Law 1: Left Identity. *)
 Lemma EitherMonadLeftIdentity:
     forall (E A B : Type) (x : A) (f : A -> Either E B),
@@ -41,3 +46,5 @@ Proof.
     trivial.
     trivial.
 Qed.
+
+End EitherMonadLaws.

@@ -1,6 +1,11 @@
 Require Import CPidgin.Control.Applicative.
 Require Import CPidgin.Data.Maybe.
 
+Module MaybeApplicativeLaws.
+
+Import Applicative.
+Import Maybe.Maybe.
+
 (* Helper function to act as an id function. *)
 Definition id' {A : Type} (x : A) : A :=
     x.
@@ -64,3 +69,5 @@ Proof.
     trivial.
     trivial.
 Qed.
+
+End MaybeApplicativeLaws.

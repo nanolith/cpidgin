@@ -1,4 +1,8 @@
-Require Import CPidgin.Data.Maybe.
+Require CPidgin.Data.Maybe.
+
+Module MList.
+
+Import Maybe.Maybe.
 
 (* Simple linked list of values of an optional type. *)
 Inductive MList (A : Type) : Type :=
@@ -85,3 +89,5 @@ Fixpoint removeNth {A : Type} (n : nat) (l : MList A) : MList A :=
             | (x :: xs) => x :: removeNth n' xs
         end
     end.
+
+End MList.

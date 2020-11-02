@@ -9,6 +9,14 @@ Require Import CPidgin.Data.Bits.
 Require Import CPidgin.Data.Either.
 Require Import CPidgin.Data.MList.
 
+Module Machine.
+
+Import Bits.
+Import Either.
+Import Instruction.
+Import MList.
+Import Monad.
+
 (* A stack in the machine model. *)
 Definition Stack := MList B64.
 
@@ -46,3 +54,5 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
             | NOP => evalNOP mach
         end.
+
+End Machine.
