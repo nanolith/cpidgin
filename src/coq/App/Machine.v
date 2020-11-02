@@ -8,6 +8,7 @@ Require Import CPidgin.Control.Monad.
 Require Import CPidgin.Data.Bits.
 Require Import CPidgin.Data.Either.
 Require Import CPidgin.Data.List.
+Require Import CPidgin.Data.Maybe.
 
 Module Machine.
 
@@ -15,6 +16,7 @@ Import Bits.
 Import Either.
 Import Instruction.
 Import List.
+Import Maybe.
 Import Monad.
 
 (* Time in the machine model. *)
@@ -90,6 +92,21 @@ Definition evalPOP (mach : Machine) : MResult :=
             mret (timeDelay (Mach ss (Reg s) t) POP_DELAY)
     end.
 
+(* Evaluate a SEL instruction with the given machine state. *)
+Definition evalSEL (mach : Machine) (offset : nat) : MResult :=
+    match mach with
+        | Mach [] r t => exception MachineErrorStackUnderflow
+        | Mach ss r t =>
+            match (nth offset ss) with
+                | Just a =>
+                    mret
+                        (timeDelay
+                            (Mach (removeNth offset ss) (Reg a) t)
+                            SEL_DELAY)
+                | Nothing => exception MachineErrorStackUnderflow
+            end
+    end.
+
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
@@ -97,6 +114,7 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
             | IMM val => evalIMM mach val
             | PUSH => evalPUSH mach
             | POP => evalPOP mach
+            | SEL n => evalSEL mach n
         end.
 
 End Machine.
