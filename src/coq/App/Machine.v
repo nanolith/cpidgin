@@ -67,10 +67,17 @@ Definition evalNOP (mach : Machine) : MResult :=
         | Mach s r t => mret (timeDelay (Mach s r t) NOP_DELAY)
     end.
 
+(* Evaluate an IMM instruction with the given machine state. *)
+Definition evalIMM (mach : Machine) (v : B64) : MResult :=
+    match mach with
+        | Mach s r t => mret (timeDelay (Mach s (Reg v) t) IMM_DELAY)
+    end.
+
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
             | NOP => evalNOP mach
+            | IMM val => evalIMM mach val
         end.
 
 End Machine.
