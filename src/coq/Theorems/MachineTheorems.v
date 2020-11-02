@@ -49,7 +49,34 @@ Lemma eval_push:
 Proof.
     intros.
     unfold eval.
-    unfold evalIMM.
+    unfold evalPUSH.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
+(* Evaluating a POP instruction on an empty stack fails. *)
+Lemma eval_pop_empty_stack:
+    forall (r : Register) (t : Time),
+        eval POP (Mach [] r t)
+            = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalPOP.
+    unfold exception.
+    trivial.
+Qed.
+
+(* Evaluating a POP instruction on a non-empty stack succeeds. *)
+Lemma eval_pop:
+    forall (r : Register) (s : Stack) (v : B64) (t : Time),
+        eval POP (Mach (v :: s) r t)
+            = Right (timeDelay (Mach s (Reg v) t) POP_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalPOP.
     unfold Monad.mret.
     unfold eitherMonad.
     trivial.
