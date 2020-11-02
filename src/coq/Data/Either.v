@@ -2,6 +2,12 @@ Require Import CPidgin.Control.Applicative.
 Require Import CPidgin.Control.Functor.
 Require Import CPidgin.Control.Monad.
 
+Module Either.
+
+Import Applicative.
+Import Functor.
+Import Monad.
+
 (* The Either inductive type describes a disjunctive value. *)
 Inductive Either (A B : Type) : Type :=
     | Left : A -> Either A B
@@ -49,3 +55,5 @@ Instance eitherMonad (e: Type) : Monad (Either e) := {
           | Right y => f y
         end
 }.
+
+End Either.

@@ -1,6 +1,11 @@
 Require Import CPidgin.Control.Monad.
 Require Import CPidgin.Data.Maybe.
 
+Module MaybeMonadLaws.
+
+Import Maybe.Maybe.
+Import Monad.
+
 (* Monad Law 1: Left Identity. *)
 Lemma MaybeMonadLeftIdentity:
     forall (A B : Type) (x : A) (f : A -> Maybe B),
@@ -42,3 +47,5 @@ Proof.
     trivial.
     trivial.
 Qed.
+
+End MaybeMonadLaws.

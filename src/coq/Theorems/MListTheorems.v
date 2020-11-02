@@ -3,6 +3,11 @@ Require Import CPidgin.Data.Maybe.
 Require Import Coq.Arith.Compare_dec.
 Require Import PeanoNat.
 
+Module MListTheorems.
+
+Import Maybe.Maybe.
+Import MList.
+
 (* head of [] returns Nothing. *)
 Lemma list_head_nil_none:
     forall (A : Type),
@@ -321,3 +326,5 @@ Proof.
     rewrite <- IHl.
     trivial.
 Qed.
+
+End MListTheorems.

@@ -1,3 +1,5 @@
+Module Functor.
+
 (* The Functor typeclass provides a mapping function to lift an arbitrary     *)
 (* function to a functor space.                                               *)
 Class Functor (F: Type -> Type) : Type := {
@@ -6,3 +8,5 @@ Class Functor (F: Type -> Type) : Type := {
 
 (* The <$> operator maps to fmap. *)
 Infix "<$>" := fmap (at level 65, left associativity).
+
+End Functor.

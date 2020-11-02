@@ -1,6 +1,11 @@
 Require Import CPidgin.Control.Applicative.
 Require Import CPidgin.Data.Either.
 
+Module EitherApplicativeLaws.
+
+Import Applicative.
+Import Either.Either.
+
 (* Helper function to act as an id function. *)
 Definition id' {A : Type} (x : A) : A :=
     x.
@@ -76,3 +81,5 @@ Proof.
     trivial.
     trivial.
 Qed.
+
+End EitherApplicativeLaws.

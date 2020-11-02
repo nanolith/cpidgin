@@ -1,6 +1,11 @@
 Require Import CPidgin.Control.Functor.
 Require Import CPidgin.Data.Maybe.
 
+Module MaybeFunctorLaws.
+
+Import Functor.
+Import Maybe.Maybe.
+
 (* Helper function to act as an id function. *)
 Definition id' {A : Type} (x : A): A :=
     x.
@@ -32,3 +37,5 @@ Proof.
     trivial.
     trivial.
 Qed.
+
+End MaybeFunctorLaws.

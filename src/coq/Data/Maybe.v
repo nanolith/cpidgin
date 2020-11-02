@@ -2,6 +2,12 @@ Require Import CPidgin.Control.Applicative.
 Require Import CPidgin.Control.Functor.
 Require Import CPidgin.Control.Monad.
 
+Module Maybe.
+
+Import Applicative.
+Import Functor.
+Import Monad.
+
 (* The Maybe inductive type describes an optional value. *)
 Inductive Maybe (A : Type) : Type :=
     | Just : A -> Maybe A
@@ -49,3 +55,5 @@ Instance maybeMonad : Monad Maybe := {
           | Just x => f x
         end
 }.
+
+End Maybe.
