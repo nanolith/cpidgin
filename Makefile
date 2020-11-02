@@ -21,6 +21,9 @@ ALL: $(IDRIS_OBJECTS) $(COQ_OBJECTS)
 clean:
 	rm -f $(IDRIS_OBJECTS) $(COQ_OBJECTS) $(COQ_GLOBS)
 
+#List depends on Maybe
+src/coq/Data/List.vo : src/coq/Data/Maybe.vo
+
 #MList depends on Maybe
 src/coq/Data/MList.vo : src/coq/Data/Maybe.vo
 
