@@ -52,7 +52,8 @@ Export TimeDelay.
 
 (* Possible errors during a computation. *)
 Inductive MachineError : Type :=
-    | MachineErrorUnknownInstruction.
+    | MachineErrorUnknownInstruction
+    | MachineErrorStackUnderflow.
 
 (* The result of a computation can be a MachineError or a Machine state. *)
 Definition MResult := Either MachineError Machine.
@@ -80,12 +81,22 @@ Definition evalPUSH (mach : Machine) : MResult :=
             mret (timeDelay (Mach (r :: s) (Reg r) t) PUSH_DELAY)
     end.
 
+(* Evaluate a POP instruction with the given machine state. *)
+Definition evalPOP (mach : Machine) : MResult :=
+    match mach with
+        | Mach [] r t =>
+            exception MachineErrorStackUnderflow
+        | Mach (s :: ss) r t =>
+            mret (timeDelay (Mach ss (Reg s) t) POP_DELAY)
+    end.
+
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
             | NOP => evalNOP mach
             | IMM val => evalIMM mach val
             | PUSH => evalPUSH mach
+            | POP => evalPOP mach
         end.
 
 End Machine.

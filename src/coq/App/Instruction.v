@@ -8,7 +8,8 @@ Import Bits.
 Inductive Instruction : Type :=
     | NOP : Instruction
     | IMM : B64 -> Instruction
-    | PUSH : Instruction.
+    | PUSH : Instruction
+    | POP : Instruction.
 
 (* The time to execute a NOP instruction. *)
 Definition NOP_DELAY : nat := 1.
@@ -18,5 +19,8 @@ Definition IMM_DELAY : nat := 2.
 
 (* The time to execute a PUSH instruction. *)
 Definition PUSH_DELAY : nat := 2.
+
+(* The time to execute a POP instruction. *)
+Definition POP_DELAY : nat := 2.
 
 End Instruction.
