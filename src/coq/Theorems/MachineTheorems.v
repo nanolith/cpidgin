@@ -12,7 +12,7 @@ Import Monad.
 (* Evaluating a NOP instruction succeeds. *)
 Lemma eval_nop:
     forall (mach : Machine),
-        eval NOP mach = Right mach.
+        eval NOP mach = Right (timeDelay mach NOP_DELAY).
 Proof.
     intros.
     unfold eval.

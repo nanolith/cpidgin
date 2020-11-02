@@ -17,6 +17,9 @@ Import Instruction.
 Import List.
 Import Monad.
 
+(* Time in the machine model. *)
+Definition Time := B64.
+
 (* A stack in the machine model. *)
 Definition Stack := List B64.
 
@@ -26,11 +29,26 @@ Inductive Register : Type :=
 
 (* The machine state in the machine model. *)
 Inductive Machine : Type :=
-    | Mach : Stack -> Register -> Machine.
+    | Mach : Stack -> Register -> Time -> Machine.
 
 (* An empty machine state. *)
 Definition emptyMachine : Machine :=
-    Mach [] (Reg (nat_to_B64 0)).
+    Mach [] (Reg (nat_to_B64 0)) (nat_to_B64 0).
+
+(* Module for the time delay function. *)
+Module TimeDelay.
+
+    Local Open Scope Z_scope.
+
+    (* Delay the machine by a fixed amount of time. *)
+    Definition timeDelay (m : Machine) (tn : nat) : Machine :=
+        match m with
+            | Mach s r t1 => Mach s r (Z_to_B64 ((Z.of_nat tn) + (B64_to_Z t1)))
+        end.
+
+End TimeDelay.
+
+Export TimeDelay.
 
 (* Possible errors during a computation. *)
 Inductive MachineError : Type :=
@@ -46,7 +64,7 @@ Definition exception (e : MachineError) : MResult :=
 (* Evaluate a NOP instruction with the given machine state. *)
 Definition evalNOP (mach : Machine) : MResult :=
     match mach with
-        | Mach s r => mret (Mach s r)
+        | Mach s r t => mret (timeDelay (Mach s r t) NOP_DELAY)
     end.
 
 (* Evaluate an instruction on the given machine state. *)
