@@ -107,6 +107,13 @@ Definition evalSEL (mach : Machine) (offset : nat) : MResult :=
             end
     end.
 
+(* Evaluate a SHL instruction with the given machine state. *)
+Definition evalSHL (mach : Machine) (n : nat) : MResult :=
+    match mach with
+        | Mach ss (Reg r) t =>
+            mret (timeDelay (Mach ss (Reg (B64_shl_iter n r)) t) SHL_DELAY)
+    end.
+
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
@@ -115,6 +122,7 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
             | PUSH => evalPUSH mach
             | POP => evalPOP mach
             | SEL n => evalSEL mach n
+            | SHL n => evalSHL mach n
         end.
 
 End Machine.

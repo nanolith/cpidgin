@@ -1,3 +1,9 @@
+Require Import Coq.Bool.Bvector.
+Require Import Coq.ZArith.BinInt.
+Require Import Coq.ZArith.Zdigits.
+Require Import Coq.ZArith.Zdiv.
+Require Import Coq.ZArith.Zorder.
+Require Import Coq.micromega.Lia.
 Require Import CPidgin.App.Instruction.
 Require Import CPidgin.App.Machine.
 Require Import CPidgin.Data.Bits.
@@ -129,6 +135,24 @@ Proof.
     unfold eval.
     unfold evalSEL.
     rewrite H.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
+(* If x is in range, then SHL x returns a valid result. *)
+Lemma eval_shl:
+    forall (ss : Stack) (t : Time) (n : nat) (x : Z),
+        eval (SHL n) (Mach ss (Reg (Z_to_B64 x)) t)
+            = Right
+                (timeDelay
+                    (Mach ss (Reg (B64_shl_iter n (Z_to_B64 x))) t) SHL_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalSHL.
+    unfold B64_to_Z.
+    unfold Z_to_B64.
     unfold Monad.mret.
     unfold eitherMonad.
     trivial.

@@ -50,6 +50,34 @@ Module ZStuff.
         nia.
     Qed.
 
+    (* Left shifting a value by n is the same as multiplying it by 2^n. *)
+    Lemma bits_shl_iter:
+        forall (x : Z) (n : nat),
+            0 <= x ->
+            x < two_power_nat 64 ->
+            0 <= x * (two_power_nat n) < two_power_nat 64 ->
+            B64_to_Z (B64_shl_iter n (Z_to_B64 x)) = x * (two_power_nat n).
+    Proof.
+        intros x n H0 H1 H2.
+        destruct H2.
+        unfold B64_shl_iter.
+        unfold Z_to_B64.
+        unfold B64_to_Z.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_to_binary_to_Z.
+        trivial.
+        nia.
+        nia.
+        rewrite Z_to_binary_to_Z.
+        nia.
+        nia.
+        nia.
+        rewrite Z_to_binary_to_Z.
+        nia.
+        nia.
+        nia.
+    Qed.
+
     (* Shifting a value to the right is the same as dividing it by 2. *)
     Lemma bits_shr:
         forall (x : Z),
