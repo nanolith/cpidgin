@@ -32,6 +32,9 @@ Module ZStuff.
     (* Do a left shift of a B64 value. *)
     Definition B64_shl (bv : B64) := Z_to_B64 ((B64_to_Z bv) * 2).
 
+    (* Do a right shift of a B64 value. *)
+    Definition B64_shr (bv : B64) := Z_to_B64 ((B64_to_Z bv) / 2).
+
 End ZStuff.
 
 Export ZStuff.
