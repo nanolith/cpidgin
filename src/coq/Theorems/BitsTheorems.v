@@ -50,6 +50,38 @@ Module ZStuff.
         nia.
     Qed.
 
+    (* Shifting a value to the right is the same as dividing it by 2. *)
+    Lemma bits_shr:
+        forall (x : Z),
+            0 < x < two_power_nat 64 ->
+                B64_to_Z (B64_shr (Z_to_B64 x)) = x / 2.
+    Proof.
+        intros.
+        destruct H.
+        unfold B64_shr.
+        unfold Z_to_B64.
+        unfold B64_to_Z.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_to_binary_to_Z.
+        trivial.
+        nia.
+        nia.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z.ge_le_iff.
+        apply Z_div_pos.
+        nia.
+        nia.
+        nia.
+        nia.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_div_lt.
+        nia.
+        nia.
+        nia.
+        nia.
+        nia.
+    Qed.
+
 End ZStuff.
 
 End BitsTheorems.
