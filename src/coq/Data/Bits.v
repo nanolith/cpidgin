@@ -25,4 +25,15 @@ Definition B64_to_Z (bv : B64) : Z := binary_value 64 bv.
 (* Map an integer to a  64-bit number. *)
 Definition Z_to_B64 (z : Z) : B64 := Z_to_binary 64 z.
 
+Module ZStuff.
+
+    Local Open Scope Z_scope.
+
+    (* Do a left shift of a B64 value. *)
+    Definition B64_shl (bv : B64) := Z_to_B64 ((B64_to_Z bv) * 2).
+
+End ZStuff.
+
+Export ZStuff.
+
 End Bits.
