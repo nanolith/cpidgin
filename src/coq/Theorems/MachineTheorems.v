@@ -254,4 +254,30 @@ Proof.
     trivial.
 Qed.
 
+(* EQL with an empty stack causes a stack underflow exception. *)
+Lemma eval_eql_empty_stack:
+    forall (t : Time) (r : Register),
+        eval EQL (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalEQL.
+    unfold exception.
+    trivial.
+Qed.
+
+(* EQL performs an equality check on two values. *)
+Lemma eval_eql:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval EQL (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_eql s r)) t) EQL_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalEQL.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
