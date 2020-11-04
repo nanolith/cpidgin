@@ -52,6 +52,13 @@ Module ZStuff.
     Definition B64_shr_iter (n : nat) (bv : B64) :=
         Z_to_B64 ((B64_to_Z bv) / (two_power_nat n)).
 
+    (* Determine if x equals y. *)
+    Definition B64_eql (x y : B64) :=
+        match (B64_to_Z x) ?= (B64_to_Z y) with
+            | Eq => nat_to_B64 1
+            | _ => nat_to_B64 0
+        end.
+
 End ZStuff.
 
 Export ZStuff.
