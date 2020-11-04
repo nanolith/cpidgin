@@ -129,6 +129,14 @@ Definition evalAND (mach : Machine) : MResult :=
             mret (timeDelay (Mach ss (Reg (B64_and s r)) t) AND_DELAY)
     end.
 
+(* Evaluate an OR instruction with the given machine state. *)
+Definition evalOR (mach : Machine) : MResult :=
+    match mach with
+        | Mach [] r t => exception MachineErrorStackUnderflow
+        | Mach (s :: ss) (Reg r) t =>
+            mret (timeDelay (Mach ss (Reg (B64_or s r)) t) OR_DELAY)
+    end.
+
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
@@ -140,6 +148,7 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
             | SHL n => evalSHL mach n
             | SHR n => evalSHR mach n
             | AND => evalAND mach
+            | OR => evalOR mach
         end.
 
 End Machine.
