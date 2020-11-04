@@ -121,6 +121,13 @@ Definition evalSHR (mach : Machine) (n : nat) : MResult :=
             mret (timeDelay (Mach ss (Reg (B64_shr_iter n r)) t) SHR_DELAY)
     end.
 
+(* Evaluate an AND instruction with the given machine state. *)
+Definition evalAND (mach : Machine) : MResult :=
+    match mach with
+        | Mach [] r t => exception MachineErrorStackUnderflow
+        | Mach (s :: ss) (Reg r) t =>
+            mret (timeDelay (Mach ss (Reg (B64_and s r)) t) AND_DELAY)
+    end.
 
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
@@ -132,6 +139,7 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
             | SEL n => evalSEL mach n
             | SHL n => evalSHL mach n
             | SHR n => evalSHR mach n
+            | AND => evalAND mach
         end.
 
 End Machine.

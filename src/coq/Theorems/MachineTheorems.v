@@ -176,4 +176,30 @@ Proof.
     trivial.
 Qed.
 
+(* AND with an empty stack causes a stack underflow exception. *)
+Lemma eval_and_empty_stack:
+    forall (t : Time) (r : Register),
+        eval AND (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalAND.
+    unfold exception.
+    trivial.
+Qed.
+
+(* AND performs a bitwise and on two factors. *)
+Lemma eval_and:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval AND (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_and s r)) t) AND_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalAND.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
