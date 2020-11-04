@@ -11,7 +11,8 @@ Inductive Instruction : Type :=
     | PUSH : Instruction
     | POP : Instruction
     | SEL : nat -> Instruction
-    | SHL : nat -> Instruction.
+    | SHL : nat -> Instruction
+    | SHR : nat -> Instruction.
 
 (* The time to execute a NOP instruction. *)
 Definition NOP_DELAY : nat := 1.
@@ -30,5 +31,8 @@ Definition SEL_DELAY : nat := 3.
 
 (* The time to execute a SHL instruction. *)
 Definition SHL_DELAY : nat := 2.
+
+(* The time to execute a SHR instruction. *)
+Definition SHR_DELAY : nat := 2.
 
 End Instruction.
