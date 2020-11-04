@@ -202,4 +202,30 @@ Proof.
     trivial.
 Qed.
 
+(* OR with an empty stack causes a stack underflow exception. *)
+Lemma eval_or_empty_stack:
+    forall (t : Time) (r : Register),
+        eval OR (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalOR.
+    unfold exception.
+    trivial.
+Qed.
+
+(* OR performs a bitwise or on two factors. *)
+Lemma eval_or:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval OR (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_or s r)) t) OR_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalOR.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
