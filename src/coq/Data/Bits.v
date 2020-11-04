@@ -39,6 +39,10 @@ Module ZStuff.
     (* Do a right shift of a B64 value. *)
     Definition B64_shr (bv : B64) := Z_to_B64 ((B64_to_Z bv) / 2).
 
+    (* Do an iterative right shift of a B64 value. *)
+    Definition B64_shr_iter (n : nat) (bv : B64) :=
+        Z_to_B64 ((B64_to_Z bv) / (two_power_nat n)).
+
 End ZStuff.
 
 Export ZStuff.
