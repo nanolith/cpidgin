@@ -228,4 +228,30 @@ Proof.
     trivial.
 Qed.
 
+(* XOR with an empty stack causes a stack underflow exception. *)
+Lemma eval_xor_empty_stack:
+    forall (t : Time) (r : Register),
+        eval XOR (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalXOR.
+    unfold exception.
+    trivial.
+Qed.
+
+(* XOR performs a bitwise xor on two factors. *)
+Lemma eval_xor:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval XOR (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_xor s r)) t) XOR_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalXOR.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
