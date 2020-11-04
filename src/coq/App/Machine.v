@@ -137,6 +137,14 @@ Definition evalOR (mach : Machine) : MResult :=
             mret (timeDelay (Mach ss (Reg (B64_or s r)) t) OR_DELAY)
     end.
 
+(* Evaluate an XOR instruction with the given machine state. *)
+Definition evalXOR (mach : Machine) : MResult :=
+    match mach with
+        | Mach [] r t => exception MachineErrorStackUnderflow
+        | Mach (s :: ss) (Reg r) t =>
+            mret (timeDelay (Mach ss (Reg (B64_xor s r)) t) XOR_DELAY)
+    end.
+
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
@@ -149,6 +157,7 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
             | SHR n => evalSHR mach n
             | AND => evalAND mach
             | OR => evalOR mach
+            | XOR => evalXOR mach
         end.
 
 End Machine.
