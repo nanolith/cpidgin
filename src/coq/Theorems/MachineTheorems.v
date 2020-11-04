@@ -158,4 +158,22 @@ Proof.
     trivial.
 Qed.
 
+(* If x is in range, then SHR x returns a valid result. *)
+Lemma eval_shr:
+    forall (ss : Stack) (t : Time) (n : nat) (x : Z),
+        eval (SHR n) (Mach ss (Reg (Z_to_B64 x)) t)
+            = Right
+                (timeDelay
+                    (Mach ss (Reg (B64_shr_iter n (Z_to_B64 x))) t) SHR_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalSHR.
+    unfold B64_to_Z.
+    unfold Z_to_B64.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
