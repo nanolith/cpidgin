@@ -59,6 +59,13 @@ Module ZStuff.
             | _ => nat_to_B64 0
         end.
 
+    (* Determine if x < y. *)
+    Definition B64_lt (x y : B64) :=
+        match (B64_to_Z x) ?= (B64_to_Z y) with
+            | Lt => nat_to_B64 1
+            | _ => nat_to_B64 0
+        end.
+
 End ZStuff.
 
 Export ZStuff.
