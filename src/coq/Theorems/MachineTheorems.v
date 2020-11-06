@@ -306,4 +306,30 @@ Proof.
     trivial.
 Qed.
 
+(* GT with an empty stack causes a stack underflow exception. *)
+Lemma eval_gt_empty_stack:
+    forall (t : Time) (r : Register),
+        eval GT (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalGT.
+    unfold exception.
+    trivial.
+Qed.
+
+(* GT performs an inequality check on two values. *)
+Lemma eval_gt:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval GT (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_gt s r)) t) GT_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalGT.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
