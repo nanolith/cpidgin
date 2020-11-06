@@ -17,7 +17,8 @@ Inductive Instruction : Type :=
     | OR : Instruction
     | XOR : Instruction
     | EQL : Instruction
-    | LT : Instruction.
+    | LT : Instruction
+    | GT : Instruction.
 
 (* The time to execute a NOP instruction. *)
 Definition NOP_DELAY : nat := 1.
@@ -54,5 +55,8 @@ Definition EQL_DELAY : nat := 2.
 
 (* The time to execute a LT instruction. *)
 Definition LT_DELAY : nat := 2.
+
+(* The time to execute a GT instruction. *)
+Definition GT_DELAY : nat := 2.
 
 End Instruction.
