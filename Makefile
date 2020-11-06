@@ -1,5 +1,5 @@
-IDRIS_SOURCES = $(wildcard src/idris/*.idr)
-IDRIS_OBJECTS = $(patsubst %.idr,%.ibc,$(IDRIS_SOURCES))
+#IDRIS_SOURCES = $(wildcard src/idris/*.idr)
+#IDRIS_OBJECTS = $(patsubst %.idr,%.ibc,$(IDRIS_SOURCES))
 COQ_SOURCES = $(wildcard src/coq/Control/*.v)
 COQ_SOURCES += $(wildcard src/coq/Data/*.v)
 COQ_SOURCES += $(wildcard src/coq/App/*.v)
