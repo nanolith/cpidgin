@@ -210,6 +210,43 @@ Module ZStuff.
         trivial.
     Qed.
 
+
+    (* If two values are equal, then B64_gt returns 0. *)
+    Lemma B64_gt_Eq:
+        forall (x y : B64),
+            (B64_to_Z x) ?= (B64_to_Z y) = Eq ->
+                B64_gt x y = nat_to_B64 0.
+    Proof.
+        intros x y H.
+        unfold B64_gt.
+        rewrite H.
+        trivial.
+    Qed.
+
+    (* If two values are Lt, then B64_gt returns 0. *)
+    Lemma B64_gt_Lt:
+        forall (x y : B64),
+            (B64_to_Z x) ?= (B64_to_Z y) = Lt ->
+                B64_gt x y = nat_to_B64 0.
+    Proof.
+        intros x y H.
+        unfold B64_gt.
+        rewrite H.
+        trivial.
+    Qed.
+
+    (* If two values are Gt, then B64_gt returns 1. *)
+    Lemma B64_gt_Gt:
+        forall (x y : B64),
+            (B64_to_Z x) ?= (B64_to_Z y) = Gt ->
+                B64_gt x y = nat_to_B64 1.
+    Proof.
+        intros x y H.
+        unfold B64_gt.
+        rewrite H.
+        trivial.
+    Qed.
+
 End ZStuff.
 
 End BitsTheorems.
