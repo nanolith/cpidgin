@@ -153,6 +153,14 @@ Definition evalEQL (mach : Machine) : MResult :=
             mret (timeDelay (Mach ss (Reg (B64_eql s r)) t) EQL_DELAY)
     end.
 
+(* Evaluate a LT instruction with the given machine state. *)
+Definition evalLT (mach : Machine) : MResult :=
+    match mach with
+        | Mach [] r t => exception MachineErrorStackUnderflow
+        | Mach (s :: ss) (Reg r) t =>
+            mret (timeDelay (Mach ss (Reg (B64_lt s r)) t) LT_DELAY)
+    end.
+
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
@@ -167,6 +175,7 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
             | OR => evalOR mach
             | XOR => evalXOR mach
             | EQL => evalEQL mach
+            | LT => evalLT mach
         end.
 
 End Machine.
