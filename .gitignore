@@ -1,5 +1,7 @@
 *.ibc
 *.vo
+*.vok
+*.vos
 *.glob
 *.aux
 .nia.cache
