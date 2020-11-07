@@ -20,7 +20,8 @@ Inductive Instruction : Type :=
     | LT : Instruction
     | GT : Instruction
     | LE : Instruction
-    | GE : Instruction.
+    | GE : Instruction
+    | NEQ : Instruction.
 
 (* The time to execute a NOP instruction. *)
 Definition NOP_DELAY : nat := 1.
@@ -66,5 +67,8 @@ Definition LE_DELAY : nat := 2.
 
 (* The time to execute a GE instruction. *)
 Definition GE_DELAY : nat := 2.
+
+(* The time to execute a NEQ instruction. *)
+Definition NEQ_DELAY : nat := 2.
 
 End Instruction.

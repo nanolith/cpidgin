@@ -185,6 +185,14 @@ Definition evalGE (mach : Machine) : MResult :=
             mret (timeDelay (Mach ss (Reg (B64_ge s r)) t) GE_DELAY)
     end.
 
+(* Evaluate a NEQ instruction with the given machine state. *)
+Definition evalNEQ (mach : Machine) : MResult :=
+    match mach with
+        | Mach [] r t => exception MachineErrorStackUnderflow
+        | Mach (s :: ss) (Reg r) t =>
+            mret (timeDelay (Mach ss (Reg (B64_neq s r)) t) NEQ_DELAY)
+    end.
+
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
@@ -203,6 +211,7 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
             | GT => evalGT mach
             | LE => evalLE mach
             | GE => evalGE mach
+            | NEQ => evalNEQ mach
         end.
 
 End Machine.
