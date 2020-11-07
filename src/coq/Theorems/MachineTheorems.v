@@ -358,4 +358,30 @@ Proof.
     trivial.
 Qed.
 
+(* GE with an empty stack causes a stack underflow exception. *)
+Lemma eval_ge_empty_stack:
+    forall (t : Time) (r : Register),
+        eval GE (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalGE.
+    unfold exception.
+    trivial.
+Qed.
+
+(* GE performs an inequality check on two values. *)
+Lemma eval_ge:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval GE (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_ge s r)) t) GE_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalGE.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
