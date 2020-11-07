@@ -89,6 +89,13 @@ Module ZStuff.
             | _ => nat_to_B64 0
         end.
 
+    (* Determine if x != y. *)
+    Definition B64_neq (x y : B64) :=
+        match (B64_to_Z x) ?= (B64_to_Z y) with
+            | Eq => nat_to_B64 0
+            | _ => nat_to_B64 1
+        end.
+
 End ZStuff.
 
 Export ZStuff.
