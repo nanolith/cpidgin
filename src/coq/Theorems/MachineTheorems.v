@@ -384,4 +384,30 @@ Proof.
     trivial.
 Qed.
 
+(* NEQ with an empty stack causes a stack underflow exception. *)
+Lemma eval_neq_empty_stack:
+    forall (t : Time) (r : Register),
+        eval NEQ (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalNEQ.
+    unfold exception.
+    trivial.
+Qed.
+
+(* NEQ performs an inequality check on two values. *)
+Lemma eval_neq:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval NEQ (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_neq s r)) t) NEQ_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalNEQ.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
