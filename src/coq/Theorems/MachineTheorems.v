@@ -410,4 +410,30 @@ Proof.
     trivial.
 Qed.
 
+(* ADD with an empty stack causes a stack underflow exception. *)
+Lemma eval_add_empty_stack:
+    forall (t : Time) (r : Register),
+        eval ADD (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalADD.
+    unfold exception.
+    trivial.
+Qed.
+
+(* ADD adds two numbers. *)
+Lemma eval_add:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval ADD (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_add s r)) t) ADD_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalADD.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
