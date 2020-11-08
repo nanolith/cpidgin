@@ -436,4 +436,30 @@ Proof.
     trivial.
 Qed.
 
+(* SUB with an empty stack causes a stack underflow exception. *)
+Lemma eval_sub_empty_stack:
+    forall (t : Time) (r : Register),
+        eval SUB (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalSUB.
+    unfold exception.
+    trivial.
+Qed.
+
+(* SUB subtracts two numbers. *)
+Lemma eval_sub:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval SUB (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_sub s r)) t) SUB_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalSUB.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
