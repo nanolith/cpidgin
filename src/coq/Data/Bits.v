@@ -100,6 +100,10 @@ Module ZStuff.
     Definition B64_add (x y : B64) :=
         (Z_to_B64 ((B64_to_Z x) + (B64_to_Z y))).
 
+    (* Subtract two numbers. *)
+    Definition B64_sub (x y : B64) :=
+        (Z_to_B64 ((B64_to_Z x) - (B64_to_Z y))).
+
 End ZStuff.
 
 Export ZStuff.
