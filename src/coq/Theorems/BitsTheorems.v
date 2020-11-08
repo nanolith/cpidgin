@@ -355,6 +355,42 @@ Module ZStuff.
         trivial.
     Qed.
 
+    (* We can add two values. *)
+    Lemma B64_add:
+        forall (x y : Z),
+            0 <= x < two_power_nat 64 ->
+            0 <= y < two_power_nat 64 ->
+            x + y < two_power_nat 64 ->
+            (B64_to_Z (B64_add (Z_to_B64 x) (Z_to_B64 y))) = x + y.
+    Proof.
+        intros x y Hx Hy Hxy.
+        unfold B64_add.
+        unfold B64_to_Z.
+        unfold Z_to_B64.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_to_binary_to_Z.
+        trivial.
+        nia.
+        nia.
+        nia.
+        nia.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_to_binary_to_Z.
+        nia.
+        nia.
+        nia.
+        nia.
+        nia.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_to_binary_to_Z.
+        nia.
+        nia.
+        nia.
+        nia.
+        nia.
+    Qed.
+
 End ZStuff.
 
 End BitsTheorems.
