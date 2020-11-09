@@ -112,6 +112,9 @@ Module ZStuff.
     Definition B64_div (x y : B64) :=
         (Z_to_B64 ((B64_to_Z x) / (B64_to_Z y))).
 
+    (* Compute x modulo y. *)
+    Definition B64_mod (x y : B64) :=
+        (Z_to_B64 ((B64_to_Z x) mod (B64_to_Z y))).
 
 End ZStuff.
 

@@ -499,6 +499,42 @@ Module ZStuff.
         nia.
     Qed.
 
+    (* We can compute x modulo y. *)
+    Lemma B64_mod:
+        forall (x y : Z),
+            0 <= x < two_power_nat 64 ->
+            0 <= y < two_power_nat 64 ->
+            0 <= x mod y < two_power_nat 64 ->
+            (B64_to_Z (B64_mod (Z_to_B64 x) (Z_to_B64 y))) = x mod y.
+    Proof.
+        intros x y Hx Hy Hxy.
+        unfold B64_mod.
+        unfold B64_to_Z.
+        unfold Z_to_B64.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_to_binary_to_Z.
+        trivial.
+        nia.
+        nia.
+        nia.
+        nia.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_to_binary_to_Z.
+        nia.
+        nia.
+        nia.
+        nia.
+        nia.
+        rewrite Z_to_binary_to_Z.
+        rewrite Z_to_binary_to_Z.
+        nia.
+        nia.
+        nia.
+        nia.
+        nia.
+    Qed.
+
 End ZStuff.
 
 End BitsTheorems.
