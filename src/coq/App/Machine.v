@@ -225,6 +225,14 @@ Definition evalDIV (mach : Machine) : MResult :=
             mret (timeDelay (Mach ss (Reg (B64_div s r)) t) DIV_DELAY)
     end.
 
+(* Evaluate a MOD instruction with the given machine state. *)
+Definition evalMOD (mach : Machine) : MResult :=
+    match mach with
+        | Mach [] r t => exception MachineErrorStackUnderflow
+        | Mach (s :: ss) (Reg r) t =>
+            mret (timeDelay (Mach ss (Reg (B64_mod s r)) t) MOD_DELAY)
+    end.
+
 (* Evaluate an instruction on the given machine state. *)
 Definition eval (ins : Instruction) (mach : Machine) : MResult :=
         match ins with
@@ -248,6 +256,7 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
             | SUB => evalSUB mach
             | MUL => evalMUL mach
             | DIV => evalDIV mach
+            | MOD => evalMOD mach
         end.
 
 End Machine.
