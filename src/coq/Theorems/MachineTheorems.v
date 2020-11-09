@@ -474,7 +474,7 @@ Proof.
     trivial.
 Qed.
 
-(* MUL subtracts two numbers. *)
+(* MUL multiplies two numbers. *)
 Lemma eval_mul:
     forall (s : B64) (ss : Stack) (t : Time) (r : B64),
         eval MUL (Mach (s :: ss) (Reg r) t)
@@ -483,6 +483,32 @@ Proof.
     intros.
     unfold eval.
     unfold evalMUL.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
+(* DIV with an empty stack causes a stack underflow exception. *)
+Lemma eval_div_empty_stack:
+    forall (t : Time) (r : Register),
+        eval DIV (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalDIV.
+    unfold exception.
+    trivial.
+Qed.
+
+(* DIV divides two numbers. *)
+Lemma eval_div:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval DIV (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_div s r)) t) DIV_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalDIV.
     unfold Monad.mret.
     unfold eitherMonad.
     trivial.
