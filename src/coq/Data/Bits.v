@@ -108,6 +108,11 @@ Module ZStuff.
     Definition B64_mul (x y : B64) :=
         (Z_to_B64 ((B64_to_Z x) * (B64_to_Z y))).
 
+    (* Divide two numbers. *)
+    Definition B64_div (x y : B64) :=
+        (Z_to_B64 ((B64_to_Z x) / (B64_to_Z y))).
+
+
 End ZStuff.
 
 Export ZStuff.
