@@ -514,4 +514,30 @@ Proof.
     trivial.
 Qed.
 
+(* MOD with an empty stack causes a stack underflow exception. *)
+Lemma eval_mod_empty_stack:
+    forall (t : Time) (r : Register),
+        eval MOD (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalMOD.
+    unfold exception.
+    trivial.
+Qed.
+
+(* MOD computes x mod y. *)
+Lemma eval_mod:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval MOD (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_mod s r)) t) MOD_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalMOD.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
