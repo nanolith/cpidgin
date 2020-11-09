@@ -462,4 +462,30 @@ Proof.
     trivial.
 Qed.
 
+(* MUL with an empty stack causes a stack underflow exception. *)
+Lemma eval_mul_empty_stack:
+    forall (t : Time) (r : Register),
+        eval MUL (Mach [] r t) = Left MachineErrorStackUnderflow.
+Proof.
+    intros.
+    unfold eval.
+    unfold evalMUL.
+    unfold exception.
+    trivial.
+Qed.
+
+(* MUL subtracts two numbers. *)
+Lemma eval_mul:
+    forall (s : B64) (ss : Stack) (t : Time) (r : B64),
+        eval MUL (Mach (s :: ss) (Reg r) t)
+            = Right (timeDelay (Mach ss (Reg (B64_mul s r)) t) MUL_DELAY).
+Proof.
+    intros.
+    unfold eval.
+    unfold evalMUL.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    trivial.
+Qed.
+
 End MachineTheorems.
