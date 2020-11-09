@@ -23,7 +23,8 @@ Inductive Instruction : Type :=
     | GE : Instruction
     | NEQ : Instruction
     | ADD : Instruction
-    | SUB : Instruction.
+    | SUB : Instruction
+    | MUL : Instruction.
 
 (* The time to execute a NOP instruction. *)
 Definition NOP_DELAY : nat := 1.
@@ -78,5 +79,8 @@ Definition ADD_DELAY : nat := 3.
 
 (* The time to execute an SUB instruction. *)
 Definition SUB_DELAY : nat := 3.
+
+(* The time to execute an MUL instruction. *)
+Definition MUL_DELAY : nat := 5.
 
 End Instruction.
