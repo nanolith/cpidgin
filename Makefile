@@ -23,6 +23,7 @@ clean:
 
 #List depends on Maybe
 src/coq/Data/List.vo : src/coq/Data/Maybe.vo
+src/coq/Data/List.vo : src/coq/Data/Semigroup.vo
 
 #MList depends on Maybe
 src/coq/Data/MList.vo : src/coq/Data/Maybe.vo

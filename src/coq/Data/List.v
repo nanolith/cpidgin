@@ -1,8 +1,10 @@
 Require CPidgin.Data.Maybe.
+Require CPidgin.Data.Semigroup.
 
 Module List.
 
 Import Maybe.Maybe.
+Import Semigroup.Semigroup.
 
 (* Simple linked list of values. *)
 Inductive List (A : Type) : Type :=
@@ -89,5 +91,10 @@ Fixpoint removeNth {A : Type} (n : nat) (l : List A) : List A :=
             | (x :: xs) => x :: removeNth n' xs
         end
     end.
+
+(* List forms a Semigroup with append. *)
+Instance listSemigroup : Semigroup List := {
+    op {a : Type} (x y : List a) := append x y;
+}.
 
 End List.
