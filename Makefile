@@ -27,5 +27,8 @@ src/coq/Data/List.vo : src/coq/Data/Maybe.vo
 #MList depends on Maybe
 src/coq/Data/MList.vo : src/coq/Data/Maybe.vo
 
+#Monoid depends on Semigroup
+src/coq/Data/Monoid.vo : src/coq/Data/Semigroup.vo
+
 #Machine depends on Instruction
 src/coq/App/Machine.vo : src/coq/App/Instruction.vo
