@@ -94,6 +94,20 @@ Fixpoint removeNth {A : Type} (n : nat) (l : List A) : List A :=
         end
     end.
 
+(* Perform a left fold over a list. *)
+Fixpoint foldl {A B : Type} (fn : A -> B -> B) (b : B) (ys : List A) : B :=
+    match ys with
+        | [] => b
+        | (x :: xs) => foldl fn (fn x b) xs
+    end.
+
+(* Perform a right fold over a list. *)
+Fixpoint foldr {A B : Type} (fn : A -> B -> B) (b : B) (ys : List A) : B :=
+    match ys with
+        | [] => b
+        | (x :: xs) => fn x (foldr fn b xs)
+    end.
+
 (* List forms a Semigroup with append. *)
 Instance listSemigroup : Semigroup List := {
     op {a : Type} (x y : List a) := append x y;
