@@ -1,9 +1,11 @@
 Require CPidgin.Data.Maybe.
+Require CPidgin.Data.Monoid.
 Require CPidgin.Data.Semigroup.
 
 Module List.
 
 Import Maybe.Maybe.
+Import Monoid.Monoid.
 Import Semigroup.Semigroup.
 
 (* Simple linked list of values. *)
@@ -95,6 +97,11 @@ Fixpoint removeNth {A : Type} (n : nat) (l : List A) : List A :=
 (* List forms a Semigroup with append. *)
 Instance listSemigroup : Semigroup List := {
     op {a : Type} (x y : List a) := append x y;
+}.
+
+(* List forms a Monoid with append and the empty list. *)
+Instance listMonoid : Monoid List := {
+    mempty {a : Type} := [] : List a;
 }.
 
 End List.

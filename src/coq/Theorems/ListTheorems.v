@@ -1,5 +1,6 @@
 Require Import CPidgin.Data.List.
 Require Import CPidgin.Data.Maybe.
+Require Import CPidgin.Data.Monoid.
 Require Import CPidgin.Data.Semigroup.
 Require Import Coq.Arith.Compare_dec.
 Require Import PeanoNat.
@@ -7,6 +8,7 @@ Require Import PeanoNat.
 Module ListTheorems.
 
 Import Maybe.
+Import Monoid.
 Import List.
 Import Semigroup.
 
@@ -363,6 +365,37 @@ Proof.
     induction z.
     trivial.
     trivial.
+    trivial.
+    rewrite IHx.
+    trivial.
+Qed.
+
+(* Proof that the list append monoid has a left identity. *)
+Lemma list_append_monoid_left_identity:
+    forall (A : Type) (x : List A),
+        mempty <o> x = x.
+Proof.
+    intros.
+    unfold mempty.
+    unfold listMonoid.
+    unfold op.
+    unfold listSemigroup.
+    unfold append.
+    trivial.
+Qed.
+
+(* Proof that the list append monoid has a right identity. *)
+Lemma list_append_monoid_right_identity:
+    forall (A : Type) (x : List A),
+        x <o> mempty = x.
+Proof.
+    intros.
+    unfold mempty.
+    unfold listMonoid.
+    unfold op.
+    unfold listSemigroup.
+    unfold append.
+    induction x.
     trivial.
     rewrite IHx.
     trivial.
