@@ -1,5 +1,6 @@
 Require Import CPidgin.Data.List.
 Require Import CPidgin.Data.Maybe.
+Require Import CPidgin.Data.Semigroup.
 Require Import Coq.Arith.Compare_dec.
 Require Import PeanoNat.
 
@@ -7,6 +8,7 @@ Module ListTheorems.
 
 Import Maybe.
 Import List.
+Import Semigroup.
 
 (* head of [] returns Nothing. *)
 Lemma list_head_nil_none:
@@ -344,6 +346,25 @@ Proof.
     trivial.
     rewrite list_append_cons_commute.
     rewrite <- IHl.
+    trivial.
+Qed.
+
+(* Proof that list append follows the Semigroup Associativity Law. *)
+Lemma list_append_semigroup_associativity:
+    forall (A : Type) (x y z : List A),
+        (x <o> y) <o> z = x <o> (y <o> z).
+Proof.
+    intros.
+    unfold op.
+    unfold listSemigroup.
+    unfold append.
+    induction x.
+    induction y.
+    induction z.
+    trivial.
+    trivial.
+    trivial.
+    rewrite IHx.
     trivial.
 Qed.
 
