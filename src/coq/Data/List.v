@@ -100,6 +100,13 @@ Fixpoint removeNth {A : Type} (n : nat) (l : List A) : List A :=
         end
     end.
 
+(* Reverse a list. *)
+Fixpoint reverse {A : Type} (l : List A) : List A :=
+    match l with
+        | [] => []
+        | (x :: xs) => reverse xs ++ [x]
+    end.
+
 (* Perform a left fold over a list. *)
 Fixpoint foldl {A B : Type} (fn : A -> B -> B) (b : B) (ys : List A) : B :=
     match ys with
