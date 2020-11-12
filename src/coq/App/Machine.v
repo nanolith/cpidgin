@@ -3,6 +3,7 @@ Require Import Coq.ZArith.BinInt.
 Require Import Coq.ZArith.Zdigits.
 Require Import CPidgin.App.Instruction.
 Require Import CPidgin.Control.Applicative.
+Require Import CPidgin.Control.Flip.
 Require Import CPidgin.Control.Functor.
 Require Import CPidgin.Control.Monad.
 Require Import CPidgin.Data.Bits.
@@ -14,6 +15,7 @@ Module Machine.
 
 Import Bits.
 Import Either.
+Import Flip.
 Import Instruction.
 Import List.
 Import Maybe.
@@ -258,5 +260,9 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
             | DIV => evalDIV mach
             | MOD => evalMOD mach
         end.
+
+(* Evaluate a sequence of instructions. *)
+Definition evalSequence (ins : List Instruction) (mach : Machine) : MResult :=
+    foldlM (flip eval) mach ins.
 
 End Machine.
