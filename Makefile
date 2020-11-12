@@ -22,9 +22,10 @@ clean:
 	rm -f $(IDRIS_OBJECTS) $(COQ_OBJECTS) $(COQ_GLOBS)
 
 #List depends on Maybe
+src/coq/Data/List.vo : src/coq/Data/Either.vo
 src/coq/Data/List.vo : src/coq/Data/Maybe.vo
-src/coq/Data/List.vo : src/coq/Data/Semigroup.vo
 src/coq/Data/List.vo : src/coq/Data/Monoid.vo
+src/coq/Data/List.vo : src/coq/Data/Semigroup.vo
 
 #MList depends on Maybe
 src/coq/Data/MList.vo : src/coq/Data/Maybe.vo
