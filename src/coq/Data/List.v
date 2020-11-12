@@ -1,10 +1,16 @@
+Require CPidgin.Control.Flip.
+Require CPidgin.Control.Monad.
+Require CPidgin.Data.Either.
 Require CPidgin.Data.Maybe.
 Require CPidgin.Data.Monoid.
 Require CPidgin.Data.Semigroup.
 
 Module List.
 
+Import Either.Either.
+Import Flip.Flip.
 Import Maybe.Maybe.
+Import Monad.Monad.
 Import Monoid.Monoid.
 Import Semigroup.Semigroup.
 
@@ -106,6 +112,14 @@ Fixpoint foldr {A B : Type} (fn : A -> B -> B) (b : B) (ys : List A) : B :=
     match ys with
         | [] => b
         | (x :: xs) => fn x (foldr fn b xs)
+    end.
+
+(* Perform a left fold over a list in an Either Monad space. *)
+Fixpoint foldlM {A B E : Type} (fn : B -> A -> Either E B)
+                (x : B) (ys : List A) : Either E B :=
+    match ys with
+        | [] => mret x
+        | (s :: ss) => (fn x s) >>= flip (foldlM fn) ss
     end.
 
 (* List forms a Semigroup with append. *)
