@@ -6,6 +6,7 @@ Require Import Coq.ZArith.Zorder.
 Require Import Coq.micromega.Lia.
 Require Import CPidgin.App.Instruction.
 Require Import CPidgin.App.Machine.
+Require Import CPidgin.Control.Flip.
 Require Import CPidgin.Data.Bits.
 Require Import CPidgin.Data.Either.
 Require Import CPidgin.Data.List.
@@ -15,6 +16,7 @@ Module MachineTheorems.
 
 Import Bits.
 Import Either.
+Import Flip.
 Import Instruction.
 Import List.
 Import Machine.
@@ -537,6 +539,106 @@ Proof.
     unfold evalMOD.
     unfold Monad.mret.
     unfold eitherMonad.
+    trivial.
+Qed.
+
+Local Open Scope Z_scope.
+
+Lemma reverse_singleton:
+    forall {A : Type} (x : A),
+        reverse (x :: []) = [x].
+Proof.
+    intros.
+    unfold reverse.
+    unfold append.
+    trivial.
+Qed.
+
+Lemma add_0_nat:
+    forall (x : Z),
+        x + Z.of_nat 0 = x.
+Proof.
+    intros.
+    unfold Z.of_nat.
+    rewrite Z.add_0_r.
+    trivial.
+Qed.
+
+(* We can compute x + 7 as a function. *)
+Lemma eval_fun_xplus7:
+    forall (x : Z),
+        0 <= x < two_power_nat 64 ->
+        evalFunction [(IMM (Z_to_B64 7)); ADD] [Z_to_B64 x] emptyMachine =
+            Right
+                (Mach
+                    [] (Reg (B64_add (Z_to_B64 x) (Z_to_B64 7)))
+                    (Z_to_B64
+                        ((Z.of_nat ADD_DELAY)
+                       + (Z.of_nat IMM_DELAY)
+                       + (Z.of_nat PUSH_DELAY)))).
+Proof.
+    intros.
+    unfold evalFunction.
+    unfold pushArgs.
+    unfold Monad.bind.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    rewrite reverse_singleton.
+    unfold emptyMachine.
+    unfold evalSequence.
+    unfold foldlM.
+    unfold Monad.bind.
+    unfold Monad.mret.
+    unfold eval.
+    unfold timeDelay.
+    unfold flip.
+    unfold evalIMM.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    unfold evalADD.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    unfold timeDelay.
+    unfold Z_to_B64.
+    unfold B64_to_Z.
+    rewrite Z_to_binary_to_Z.
+    rewrite Z_to_binary_to_Z.
+    unfold nat_to_B64.
+    rewrite Z_to_binary_to_Z.
+    rewrite Z.add_0_r.
+    rewrite Z.add_assoc.
+    trivial.
+    nia.
+    nia.
+    unfold nat_to_B64.
+    rewrite Z_to_binary_to_Z.
+    nia.
+    nia.
+    nia.
+    unfold nat_to_B64.
+    rewrite Z_to_binary_to_Z.
+    compute.
+    trivial.
+    nia.
+    nia.
+    rewrite Z_to_binary_to_Z.
+    unfold nat_to_B64.
+    rewrite Z_to_binary_to_Z.
+    compute.
+    intros contra.
+    inversion contra.
+    nia.
+    nia.
+    unfold nat_to_B64.
+    rewrite Z_to_binary_to_Z.
+    compute.
+    intros contra.
+    inversion contra.
+    nia.
+    nia.
+    compute.
+    trivial.
+    compute.
     trivial.
 Qed.
 
