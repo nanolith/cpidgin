@@ -265,4 +265,20 @@ Definition eval (ins : Instruction) (mach : Machine) : MResult :=
 Definition evalSequence (ins : List Instruction) (mach : Machine) : MResult :=
     foldlM (flip eval) mach ins.
 
+(* Push arguments into a machine. *)
+Fixpoint pushArgs (args : List B64) (mach : Machine) : MResult :=
+    match args with
+        | [] => mret mach
+        | (x :: xs) =>
+            match mach with
+                | Mach s r t =>
+                    pushArgs xs (timeDelay (Mach (x :: s) r t) PUSH_DELAY)
+            end
+    end.
+
+(* Evaluate a function with the given list of arguments. *)
+Definition evalFunction (ins : List Instruction) (args: List B64)
+                (mach : Machine) : MResult :=
+    pushArgs (reverse args) mach >>= evalSequence ins.
+
 End Machine.
