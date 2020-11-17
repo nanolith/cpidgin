@@ -642,4 +642,80 @@ Proof.
     trivial.
 Qed.
 
+(* We can compute x + 7 as a function. *)
+Lemma call_fun_xplus7:
+    forall (x : Z),
+        0 <= x < two_power_nat 64 ->
+        callFunction [(IMM (Z_to_B64 7)); ADD] [Z_to_B64 x] =
+            Right
+                (B64_add (Z_to_B64 x) (Z_to_B64 7)).
+Proof.
+    intros.
+    unfold callFunction.
+    unfold Monad.bind.
+    unfold eitherMonad.
+    unfold evalFunction.
+    unfold pushArgs.
+    unfold Monad.bind.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    rewrite reverse_singleton.
+    unfold emptyMachine.
+    unfold evalSequence.
+    unfold foldlM.
+    unfold Monad.bind.
+    unfold Monad.mret.
+    unfold eval.
+    unfold timeDelay.
+    unfold flip.
+    unfold evalIMM.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    unfold evalADD.
+    unfold Monad.mret.
+    unfold eitherMonad.
+    unfold timeDelay.
+    unfold Z_to_B64.
+    unfold B64_to_Z.
+    rewrite Z_to_binary_to_Z.
+    rewrite Z_to_binary_to_Z.
+    unfold nat_to_B64.
+    rewrite Z_to_binary_to_Z.
+    rewrite Z.add_0_r.
+    rewrite Z.add_assoc.
+    trivial.
+    nia.
+    nia.
+    unfold nat_to_B64.
+    rewrite Z_to_binary_to_Z.
+    nia.
+    nia.
+    nia.
+    unfold nat_to_B64.
+    rewrite Z_to_binary_to_Z.
+    compute.
+    trivial.
+    nia.
+    nia.
+    rewrite Z_to_binary_to_Z.
+    unfold nat_to_B64.
+    rewrite Z_to_binary_to_Z.
+    compute.
+    intros contra.
+    inversion contra.
+    nia.
+    nia.
+    unfold nat_to_B64.
+    rewrite Z_to_binary_to_Z.
+    compute.
+    intros contra.
+    inversion contra.
+    nia.
+    nia.
+    compute.
+    trivial.
+    compute.
+    trivial.
+Qed.
+
 End MachineTheorems.

@@ -281,4 +281,15 @@ Definition evalFunction (ins : List Instruction) (args: List B64)
                 (mach : Machine) : MResult :=
     pushArgs (reverse args) mach >>= evalSequence ins.
 
+(* Decode a machine state into a return value. *)
+Definition getReturnValue (x : Machine) : Either MachineError B64 :=
+    match x with
+    | Mach s (Reg r) t => Right r
+    end.
+
+(* Call a function, returning its return value according to the ABI. *)
+Definition callFunction (ins : List Instruction) (args: List B64)
+    : Either MachineError B64 :=
+    evalFunction ins args emptyMachine >>= getReturnValue.
+
 End Machine.
